@@ -1,0 +1,33 @@
+/* Light Theme (Default) */
+:root {
+  /* Base Colors */
+  --color-main: hsl(210, 100%, 50%);      /* Vibrant blue */
+  --color-accent-1: hsl(280, 80%, 65%);   /* Purple */
+  --color-accent-2: hsl(150, 80%, 45%);   /* Green */
+  --color-accent-3: hsl(320, 80%, 65%);   /* Pink */
+
+  --color-neutral-1: hsl(0, 0%, 95%);     /* Almost white */
+  --color-neutral-2: hsl(0, 0%, 85%);     /* Light gray */
+  --color-neutral-3: hsl(0, 0%, 30%);     /* Dark gray */
+
+  /* Applied Colors */
+  --color-bg: var(--color-neutral-1);
+  --color-text: var(--color-neutral-3);
+  --color-heading: var(--color-main);
+  --color-link: var(--color-accent-1);
+  --color-link-hover: var(--color-accent-2);
+
+  /* UI Elements */
+  --color-button-bg: var(--color-main);
+  --color-button-text: var(--color-neutral-1);
+  --color-button-hover: var(--color-accent-1);
+  
+  --color-border: var(--color-neutral-2);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Layout Colors */
+  --color-header-bg: var(--color-neutral-2);
+  --color-footer-bg: var(--color-neutral-2);
+  --color-sidebar-bg: var(--color-neutral-1);
+  --color-content-bg: white;
+} 

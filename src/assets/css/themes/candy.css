@@ -1,0 +1,25 @@
+:root[data-theme="candy"] {
+    /* Base colors */
+    --color-primary: #FF69B4;    /* Hot pink */
+    --color-secondary: #FFB6C1;  /* Light pink */
+    --color-accent: #FF1493;     /* Deep pink */
+    
+    /* Background colors */
+    --color-bg: #FFF0F5;         /* Lavender blush */
+    --color-sidebar-bg: #FFE4E1; /* Misty rose */
+    --color-header-bg: #FFB6C1;  /* Light pink */
+    --color-footer-bg: #FFB6C1;  /* Light pink */
+    
+    /* Text colors */
+    --color-text: #4B0082;       /* Indigo for contrast */
+    --color-text-secondary: #800080; /* Purple */
+    --color-heading: #C71585;    /* Medium violet red */
+    
+    /* UI element colors */
+    --color-button-bg: #FF69B4;  /* Hot pink */
+    --color-button-text: #FFF0F5; /* Lavender blush */
+    --color-button-hover: #FF1493; /* Deep pink */
+    --color-border: #FFB6C1;     /* Light pink */
+    --color-link: #C71585;       /* Medium violet red */
+    --color-link-hover: #FF1493; /* Deep pink */
+  }

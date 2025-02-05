@@ -1,0 +1,35 @@
+/* Dark Theme */
+:root[data-theme="dark"] {
+  /* Base Colors */
+  --color-main: hsl(210, 100%, 60%);      /* Brighter blue for dark mode */
+  --color-accent-1: hsl(280, 80%, 75%);   /* Lighter purple */
+  --color-accent-2: hsl(150, 70%, 55%);   /* Lighter green */
+  --color-accent-3: hsl(320, 80%, 75%);   /* Lighter pink */
+
+  --color-neutral-1: hsl(220, 10%, 10%);  /* Almost black with slight blue */
+  --color-neutral-2: hsl(220, 10%, 20%);  /* Dark gray */
+  --color-neutral-3: hsl(220, 10%, 80%);  /* Light gray */
+
+  /* Applied Colors */
+  --color-bg: var(--color-neutral-1);
+  --color-text: var(--color-neutral-3);
+  --color-heading: var(--color-main);
+  --color-link: var(--color-accent-1);
+  --color-link-hover: var(--color-accent-2);
+
+  /* UI Elements */
+  --color-button-bg: var(--color-main);
+  --color-button-text: var(--color-neutral-1);
+  --color-button-hover: var(--color-accent-1);
+  
+  --color-border: var(--color-neutral-2);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+
+  /* Layout Colors */
+  --color-header-bg: var(--color-neutral-2);
+  --color-footer-bg: var(--color-neutral-2);
+  --color-sidebar-bg: var(--color-neutral-1);
+  --color-content-bg: var(--color-neutral-1);
+
+  --background-image: url('/assets/images/star_background.gif');
+} 

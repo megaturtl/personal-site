@@ -1,0 +1,27 @@
+{
+  "name": "11ty-minimal",
+  "version": "1.0.0",
+  "description": "A minimal 11ty project with component-based structure",
+  "main": ".eleventy.js",
+  "scripts": {
+    "start": "cross-env ELEVENTY_ENV=development eleventy --serve",
+    "dev": "cross-env ELEVENTY_ENV=development eleventy --serve",
+    "build": "cross-env ELEVENTY_ENV=production eleventy"
+  },
+  "keywords": [
+    "11ty",
+    "static-site"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@minify-html/node": "^0.15.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.20.0",
+    "glob": "^10.3.10"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
