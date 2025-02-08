@@ -18,6 +18,12 @@ CELLS_PER_SIDE = 10  # Number of cells per side (total cells will be this square
 CELL_SIZE = (CANVAS_SIZE[0] // CELLS_PER_SIDE, CANVAS_SIZE[1] // CELLS_PER_SIDE)  # Calculated from canvas size
 MIN_DISTANCE = 20  # Minimum distance between star centers
 
+# Animation settings
+GLOBAL_SPEED_MULTIPLIER = 1.5  # Higher = faster animation (e.g., 2.0 = twice as fast)
+SPEED_VARIATION_CHANCE = 0.8  
+SPEED_VARIATION_RANGE = (0.75, 1.75)  # Random multiplier range for animation speed
+STATIC_STAR_CHANCE = 0.10  # 15% chance for a star to be static
+
 def get_gif_info(gif_path):
     """Get the number of frames and their durations from a GIF file."""
     with Image.open(gif_path) as img:
@@ -161,25 +167,43 @@ def create_star_background():
                 
                 # Place the star
                 with Image.open(star_file) as star:
-                    n_frames = 0
-                    try:
-                        while True:
-                            n_frames += 1
-                            star.seek(star.tell() + 1)
-                    except EOFError:
-                        pass
+                    n_frames, durations = get_gif_info(star_file)
                     star.seek(0)
                     
                     x, y = position
                     existing_stars.append((position, star_size))
+
+                    # Determine if star will be static
+                    is_static = random.random() < STATIC_STAR_CHANCE
+                    if is_static:
+                        # Choose random frame to freeze on
+                        static_frame = random.randint(0, n_frames - 1)
+                        star.seek(static_frame)
+                        static_frame = star.convert('RGBA')
+                    
+                    # Random frame offset
+                    frame_offset = random.randint(0, n_frames - 1)
+                    
+                    # Determine speed variation
+                    speed_multiplier = 1.0
+                    if not is_static and random.random() < SPEED_VARIATION_CHANCE:
+                        speed_multiplier = random.uniform(*SPEED_VARIATION_RANGE)
                     
                     for frame_idx in range(total_frames):
-                        star_frame_idx = frame_idx % n_frames
-                        star.seek(star_frame_idx)
-                        star_frame = star.convert('RGBA')
-                        frames[frame_idx].paste(star_frame, (x, y), star_frame)
-                        frame_durations[frame_idx] = max(frame_durations[frame_idx], 
-                                                       star.info.get('duration', 100))
+                        if is_static:
+                            frames[frame_idx].paste(static_frame, (x, y), static_frame)
+                        else:
+                            star.seek(0)  # Reset to start
+                            star_frame_idx = (frame_idx + frame_offset) % n_frames
+                            for _ in range(star_frame_idx):  # Seek to correct frame
+                                star.seek(star.tell() + 1)
+                            star_frame = star.convert('RGBA')
+                            frames[frame_idx].paste(star_frame, (x, y), star_frame)
+                            # Adjust frame duration based on speed multiplier
+                            frame_durations[frame_idx] = max(
+                                frame_durations[frame_idx],
+                                int(durations[star_frame_idx] * speed_multiplier)
+                            )
                 break  # Successfully placed a star, move to next cell
 
     # Save the resulting animation
@@ -188,7 +212,7 @@ def create_star_background():
         OUTPUT_FILE,
         save_all=True,
         append_images=frames[1:],
-        duration=frame_durations,
+        duration=[int(d / GLOBAL_SPEED_MULTIPLIER) for d in frame_durations],  # Apply global speed multiplier
         loop=0,
         optimize=False,
         disposal=2

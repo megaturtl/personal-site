@@ -1,29 +1,29 @@
 // Theme toggle functionality
 const THEME_KEY = 'theme';
 const THEMES = {
-  LIGHT: 'light',
   DARK: 'dark',
+  LIGHT: 'light',
   CANDY: 'candy'
 };
 
 const THEME_EMOJIS = {
-  [THEMES.LIGHT]: '☀️',
   [THEMES.DARK]: '🌙',
+  [THEMES.LIGHT]: '☀️',
   [THEMES.CANDY]: '🍬'
 };
 
 // Define theme cycle order
 const THEME_CYCLE = [
-  THEMES.LIGHT,
   THEMES.DARK,
+  THEMES.LIGHT,
   THEMES.CANDY
 ];
 
 function setTheme(theme) {
   // Validate theme
   if (!Object.values(THEMES).includes(theme)) {
-    console.warn(`Invalid theme: ${theme}. Falling back to light theme.`);
-    theme = THEMES.LIGHT;
+    console.warn(`Invalid theme: ${theme}. Falling back to dark theme.`);
+    theme = THEMES.DARK;
   }
   
   // Set theme on html element
@@ -70,7 +70,7 @@ if (themeIcon) {
 }
 
 function toggleTheme() {
-  const currentTheme = document.documentElement.dataset.theme || THEMES.LIGHT;
+  const currentTheme = document.documentElement.dataset.theme || THEMES.DARK;
   setTheme(getNextTheme(currentTheme));
 }
 

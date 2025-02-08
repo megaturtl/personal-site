@@ -1,5 +1,5 @@
-/* Light Theme (Default) */
-:root {
+/* Light Theme */
+:root[data-theme="light"] {
   /* Base Colors */
   --color-main: hsl(210, 100%, 50%);      /* Vibrant blue */
   --color-accent-1: hsl(280, 80%, 65%);   /* Purple */
@@ -14,15 +14,15 @@
   --color-bg: var(--color-neutral-1);
   --color-text: var(--color-neutral-3);
   --color-heading: var(--color-main);
-  --color-link: var(--color-accent-1);
-  --color-link-hover: var(--color-accent-2);
+  --color-link: var(--color-main);
+  --color-link-hover: var(--color-accent-1);
 
   /* UI Elements */
   --color-button-bg: var(--color-main);
   --color-button-text: var(--color-neutral-1);
   --color-button-hover: var(--color-accent-1);
   
-  --color-border: var(--color-neutral-2);
+  --color-border: var(--color-accent-1);
   --color-shadow: rgba(0, 0, 0, 0.1);
 
   /* Layout Colors */
@@ -30,4 +30,6 @@
   --color-footer-bg: var(--color-neutral-2);
   --color-sidebar-bg: var(--color-neutral-1);
   --color-content-bg: white;
+
+  --background-image: url('/assets/images/star_background.gif')
 } 

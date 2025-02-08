@@ -1,0 +1,59 @@
+/**
+* @license
+*
+* Font Family: Author
+* Designed by: Satya Rajpurohit
+* URL: https://www.fontshare.com/fonts/author
+* © 2025 Indian Type Foundry
+*
+* Author Extralight 
+* Author ExtralightItalic 
+* Author Light 
+* Author LightItalic 
+* Author Regular 
+* Author Italic 
+* Author Medium 
+* Author MediumItalic 
+* Author Semibold 
+* Author SemiboldItalic 
+* Author Bold 
+* Author BoldItalic 
+* Author Variable (Variable font)
+* Author VariableItalic (Variable font)
+
+*
+*/
+
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: wght 700.0;
+*
+* available axes:
+'wght' (range from 200.0 to 700.0
+*/
+@font-face {
+  font-family: 'Author-Variable';
+  src: url('/assets/fonts/Author/Author-Variable.woff2') format('woff2'),
+       url('/assets/fonts/Author/Author-Variable.woff') format('woff');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: wght 700.0;
+*
+* available axes:
+'wght' (range from 200.0 to 700.0
+*/
+@font-face {
+  font-family: 'Author-VariableItalic';
+  src: url('/assets/fonts/Author/Author-VariableItalic.woff2') format('woff2'),
+       url('/assets/fonts/Author/Author-VariableItalic.woff') format('woff');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: italic;
+}
+

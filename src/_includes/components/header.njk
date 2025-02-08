@@ -1,14 +1,13 @@
 <header class="site-header">
-    <nav>
-        <a href="/" class="home-link">{{ site.name | default('Home') }}</a>
-        <ul class="nav-links">
-            <li><a href="/about">About</a></li>
-            <li><a href="/projects">Projects</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
-    </nav>
-
-    <div class="theme-toggle">
+    <div class="header-content">
+        <a href="/" class="site-name">{{ site.name | default('Home') }}</a>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
         <button onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle Theme">
             <span id="theme-icon" aria-hidden="true"></span>
         </button>
