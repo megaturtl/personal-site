@@ -6,15 +6,7 @@
 * URL: https://www.fontshare.com/fonts/chillax
 * © 2025 Indian Type Foundry
 *
-* Chillax Extralight 
-* Chillax Light 
-* Chillax Regular 
-* Chillax Medium 
-* Chillax Semibold 
-* Chillax Bold 
-* Chillax Variable (Variable font)
-
-*
+* Font loading optimized for minimal layout shift
 */
 
 /**
@@ -30,7 +22,6 @@
   src: url('/assets/fonts/Chillax/Chillax-Variable.woff2') format('woff2'),
        url('/assets/fonts/Chillax/Chillax-Variable.woff') format('woff');
   font-weight: 200 700;
-  font-display: swap;
   font-style: normal;
 }
 

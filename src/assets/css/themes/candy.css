@@ -1,35 +1,41 @@
 /* Candy Theme */
 :root[data-theme="candy"] {
-  /* Base Colors */
-  --color-main: #FF69B4;         /* Hot pink */
-  --color-accent-1: #FF1493;     /* Deep pink */
-  --color-accent-2: #FFB6C1;     /* Light pink */
-  --color-accent-3: #C71585;     /* Medium violet red */
+  --is-dark: 0; /* 0 = light, 1 = dark */
 
-  --color-neutral-1: #FFF0F5;    /* Lavender blush */
-  --color-neutral-2: #FFE4E1;    /* Misty rose */
-  --color-neutral-3: #4B0082;    /* Indigo for contrast */
+  --color-red: #ff004c;
+  --color-orange: #ff5e00;
+  --color-yellow: #ffdd00;
+  --color-green: #00e63c;
+  --color-blue: #0055ff;
+  --color-purple: #9500ff;
+
+  --color-main: var(--color-red);
+  --color-2: var(--color-orange);
+  --color-3: var(--color-yellow);
+  --color-4: var(--color-green);
+  --color-5: var(--color-blue);
+  --color-6: var(--color-purple);
+
+  --color-neutral-black: #0a0a0a;
+  --color-neutral-dark: #171717;
+  --color-neutral-light: #7f7f7f;
+  --color-neutral-white: #ffffff;
+
+  --color-neutral-main: var(--color-neutral-white); /* Main neutral color for background, etc. */
+  --color-neutral-2: var(--color-neutral-dark); /* For less emphasised text etc. */
+  --color-neutral-3: var(--color-neutral-black); /* Neutral color for text, etc. */
 
   /* Applied Colors */
-  --color-bg: var(--color-neutral-1);
-  --color-text: var(--color-neutral-3);
-  --color-heading: var(--color-main);
+  --color-bg: var(--color-neutral-main);
+  --color-text: var(--color-neutral-black);
   --color-link: var(--color-main);
-  --color-link-hover: var(--color-accent-1);
+  --color-link-hover: var(--color-neutral-light);
 
   /* UI Elements */
   --color-button-bg: var(--color-main);
-  --color-button-text: var(--color-neutral-1);
-  --color-button-hover: var(--color-accent-1);
-  
-  --color-border: var(--color-accent-2);
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-button-text: var(--color-neutral-white);
+  --color-button-hover: var(--color-neutral-light);
 
-  /* Layout Colors */
-  --color-header-bg: var(--color-neutral-2);
-  --color-footer-bg: var(--color-neutral-2);
-  --color-sidebar-bg: var(--color-neutral-1);
-  --color-content-bg: white;
-
-  --background-image: url('/assets/images/star_background.gif');
+  --color-border: var(--color-main);
+  --color-shadow: rgba(0, 0, 0, 0.3);
 }

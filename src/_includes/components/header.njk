@@ -1,15 +1,42 @@
 <header class="site-header">
-    <div class="header-content">
-        <a href="/" class="site-name">{{ site.name | default('Home') }}</a>
+    <div class="header-top">
+        <div class="social-links">
+            <a href="https://open.spotify.com/user/kup8j9ni21a31qduw6jpejr9i?si=c566b611318b4886" target="_blank">
+                <img class="icon" src="/assets/icons/spotify.svg" alt="Spotify">
+            </a>
+
+            <a href="https://www.last.fm/user/megaturtl" target="_blank">
+                <img class="icon" src="/assets/icons/lastfm.png" alt="Last.fm">
+            </a>
+        </div>
+        <div id="now-playing">
+            <img id="album-cover">
+            <div id="artist"></div>
+            <div id="separator"></div>
+            <div id="track"></div>
+            <div id="date"></div>
+        </div>
+    </div>
+
+    <div class="header-middle">
+        <a href="/" class="site-title">megaturtl</a>
+        <img id="turtl" src="/assets/images/turtl-sleep-slow.gif" alt="turtl">
+    </div>
+
+    <div class="header-bottom">
         <nav class="main-nav">
             <ul class="nav-links">
-                <li><a href="/about">About</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><a href="/about">about</a></li>
+                <li><a href="/blog">blog</a></li>
+                <li><a href="/music">music</a></li>
+                <li><a href="/images">images</a></li>
+                <li><a href="/projects">projects</a></li>
+                <li><a href="/sitemap">lost?</a></li>
             </ul>
         </nav>
+
         <button onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle Theme">
-            <span id="theme-icon" aria-hidden="true"></span>
+            <span id="theme-icon" aria-hidden="true">🌙</span>
         </button>
     </div>
-</header> 
+</header>

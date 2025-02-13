@@ -1,9 +1,6 @@
 /* Global Variables */
 :root {
   /* Layout Sizing */
-  --header-height: 60px;
-  --footer-height: 60px;
-  --sidebar-width: 250px;
   --content-max-width: 1200px;
 
   /* Spacing */
@@ -15,18 +12,19 @@
   --space-xxl: 3rem;
 
   /* Content Padding */
-  --content-padding: var(--space-xl);
+  --container-padding: var(--space-md) var(--space-lg);
   
   /* Typography Scale (Major Third) */
-  --heading-size-h1: 3.815rem;
-  --heading-size-h2: 3.052rem;
-  --heading-size-h3: 2.441rem;
-  --heading-size-h4: 1.953rem;
-  --heading-size-h5: 1.563rem;
-  --heading-size-h6: 1.25rem;
+  --heading-size-h1: 5.61rem;
+  --heading-size-h2: 4.209rem;
+  --heading-size-h3: 3.157rem;
+  --heading-size-h4: 2.369rem;
+  --heading-size-h5: 1.777rem;
+  --heading-size-h6: 1.333rem;
 
-  --text-size-large: 1.563rem;
-  --text-size-medium: 1.25rem;
+  --text-size-huge: 2.369rem;
+  --text-size-large: 1.777rem;
+  --text-size-medium: 1.333rem;
   --text-size-regular: 1rem;
   --text-size-small: 0.8rem;
   --text-size-tiny: 0.64rem;

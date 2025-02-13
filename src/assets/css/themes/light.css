@@ -1,35 +1,43 @@
 /* Light Theme */
 :root[data-theme="light"] {
-  /* Base Colors */
-  --color-main: hsl(210, 100%, 50%);      /* Vibrant blue */
-  --color-accent-1: hsl(280, 80%, 65%);   /* Purple */
-  --color-accent-2: hsl(150, 80%, 45%);   /* Green */
-  --color-accent-3: hsl(320, 80%, 65%);   /* Pink */
+  --is-dark: 0; /* 0 = light, 1 = dark */
 
-  --color-neutral-1: hsl(0, 0%, 95%);     /* Almost white */
-  --color-neutral-2: hsl(0, 0%, 85%);     /* Light gray */
-  --color-neutral-3: hsl(0, 0%, 30%);     /* Dark gray */
+  --color-red: #ff004c;
+  --color-orange: #ff5e00;
+  --color-yellow: #ffdd00;
+  --color-green: #00e63c;
+  --color-blue: #0055ff;
+  --color-purple: #9500ff;
+
+  --color-main: var(--color-red);
+  --color-2: var(--color-orange);
+  --color-3: var(--color-yellow);
+  --color-4: var(--color-green);
+  --color-5: var(--color-blue);
+  --color-6: var(--color-purple);
+
+  --color-neutral-black: #0a0a0a;
+  --color-neutral-dark: #171717;
+  --color-neutral-light: #7f7f7f;
+  --color-neutral-white: #ffffff;
+
+  --color-neutral-main: var(--color-neutral-white); /* Main neutral color for background, etc. */
+  --color-neutral-2: var(--color-neutral-dark); /* Secondary neutral color for subtler backgrounds, etc. */
+  --color-neutral-3: var(--color-neutral-light); /* Tertirary neutral color for less emphasised text etc. */
+  --color-neutral-4: var(--color-neutral-black); /* Opposite neutral color for text, icons etc. */
 
   /* Applied Colors */
-  --color-bg: var(--color-neutral-1);
-  --color-text: var(--color-neutral-3);
-  --color-heading: var(--color-main);
+  --color-bg: var(--color-neutral-main);
+  --color-title: var(--color-neutral-white);
+  --color-text: var(--color-neutral-4);
   --color-link: var(--color-main);
-  --color-link-hover: var(--color-accent-1);
+  --color-link-hover: var(--color-neutral-3);
 
   /* UI Elements */
   --color-button-bg: var(--color-main);
-  --color-button-text: var(--color-neutral-1);
-  --color-button-hover: var(--color-accent-1);
-  
-  --color-border: var(--color-accent-1);
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-button-text: var(--color-neutral-4);
+  --color-button-hover: var(--color-neutral-3);
 
-  /* Layout Colors */
-  --color-header-bg: var(--color-neutral-2);
-  --color-footer-bg: var(--color-neutral-2);
-  --color-sidebar-bg: var(--color-neutral-1);
-  --color-content-bg: white;
-
-  --background-image: url('/assets/images/star_background.gif')
-} 
+  --color-border: var(--color-main);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+}

@@ -3,20 +3,20 @@ const THEME_KEY = 'theme';
 const THEMES = {
   DARK: 'dark',
   LIGHT: 'light',
-  CANDY: 'candy'
+  // CANDY: 'candy'
 };
 
 const THEME_EMOJIS = {
   [THEMES.DARK]: '🌙',
   [THEMES.LIGHT]: '☀️',
-  [THEMES.CANDY]: '🍬'
+  // [THEMES.CANDY]: '🍬'
 };
 
 // Define theme cycle order
 const THEME_CYCLE = [
   THEMES.DARK,
   THEMES.LIGHT,
-  THEMES.CANDY
+  // THEMES.CANDY
 ];
 
 function setTheme(theme) {
