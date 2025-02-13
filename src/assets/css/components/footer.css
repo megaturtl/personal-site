@@ -20,7 +20,7 @@
 
 
 .footer-left {
-    font-size: var(--text-sm);
+    font-size: var(--text-size-small);
 }
 
 .footer-nav {
@@ -37,7 +37,7 @@
 }
 
 .footer-links a {
-    font-size: var(--text-sm);
+    font-size: var(--text-size-small);
     color: var(--color-text);
     transition: color 0.2s ease;
 }
@@ -47,7 +47,7 @@
 }
 
 .footer-right a {
-    font-size: var(--text-sm);
+    font-size: var(--text-size-small);
     color: var(--color-text);
     transition: color 0.2s ease;
 }

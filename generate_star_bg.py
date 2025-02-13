@@ -7,22 +7,45 @@ import math
 # Directory containing the star GIFs
 STARS_DIR = "src/assets/images/pixel stars"
 OUTPUT_FILE = "src/assets/images/star_background.gif"
-CANVAS_SIZE = (1000, 1000)
+CANVAS_SIZE = (800, 400)
 
 # Debug settings
 DEBUG_SHOW_GRID = False # Toggle to show/hide grid lines
 DEBUG_GRID_COLOR = (255, 0, 0, 128)  # Semi-transparent red
 
 # Distribution settings
-CELLS_PER_SIDE = 10  # Number of cells per side (total cells will be this squared)
+CELLS_PER_SIDE = 8  # Number of cells per side (total cells will be this squared)
 CELL_SIZE = (CANVAS_SIZE[0] // CELLS_PER_SIDE, CANVAS_SIZE[1] // CELLS_PER_SIDE)  # Calculated from canvas size
 MIN_DISTANCE = 20  # Minimum distance between star centers
 
 # Animation settings
-GLOBAL_SPEED_MULTIPLIER = 1.5  # Higher = faster animation (e.g., 2.0 = twice as fast)
-SPEED_VARIATION_CHANCE = 0.8  
-SPEED_VARIATION_RANGE = (0.75, 1.75)  # Random multiplier range for animation speed
-STATIC_STAR_CHANCE = 0.10  # 15% chance for a star to be static
+GLOBAL_SPEED_MULTIPLIER = 1.0  # Keep this at 1.0 to maintain star animation speed
+FALL_SPEED_MULTIPLIER = 4.0  # Separate multiplier just for falling speed (higher = faster falling)
+FALL_RATE = 1  # Pixels per frame that stars fall
+STATIC_STAR_CHANCE = 0.0  # Set to 0 since all stars should fall
+
+# Calculate frames needed for a complete cycle
+# To ensure perfect looping, we need the segment height to divide evenly into canvas height
+# and be divisible by fall rate
+def calculate_loop_segment():
+    # Find the largest segment height that:
+    # 1. Divides evenly into canvas height
+    # 2. Is divisible by fall rate
+    # This ensures stars return to exact starting positions
+    for test_height in range(CANVAS_SIZE[1], 0, -1):
+        if (CANVAS_SIZE[1] % test_height == 0 and  # Divides evenly into canvas height
+            test_height % FALL_RATE == 0 and       # Divisible by fall rate
+            test_height >= 100):                   # Keep segments reasonably sized
+            return test_height
+    return CANVAS_SIZE[1]  # Fallback to full height if no perfect division found
+
+LOOP_SEGMENT_HEIGHT = calculate_loop_segment()
+FRAMES_FOR_LOOP = LOOP_SEGMENT_HEIGHT // FALL_RATE  # Number of frames needed for the loop
+
+print(f"Using loop segment height of {LOOP_SEGMENT_HEIGHT} pixels for perfect looping")
+
+# Star positions will be stored as a list of (x, y) tuples
+star_positions = []
 
 def get_gif_info(gif_path):
     """Get the number of frames and their durations from a GIF file."""
@@ -80,6 +103,17 @@ def try_place_star(cell_bounds, star_size, existing_stars, attempts=50):
             return (x, y)
     return None
 
+def update_star_positions(positions, frame_idx):
+    """Update star positions for the current frame, handling wrap-around."""
+    updated_positions = []
+    for x, y in positions:
+        # Move star down by FALL_RATE pixels per frame
+        new_y = y + (FALL_RATE * frame_idx)
+        # Wrap around when reaching bottom of frame
+        wrapped_y = new_y % CANVAS_SIZE[1]
+        updated_positions.append((x, wrapped_y))
+    return updated_positions
+
 def create_star_background():
     # Get all GIF files and their sizes
     star_files = list(Path(STARS_DIR).glob("*.gif"))
@@ -107,13 +141,14 @@ def create_star_background():
         else:
             large_stars.append(star_file)
     
-    # Calculate frame information
+    # Calculate frame information for star animations
     frame_counts = []
     for star_file in star_files:
         n_frames, _ = get_gif_info(star_file)
         frame_counts.append(n_frames)
     
-    total_frames = max(frame_counts)
+    # Use FRAMES_FOR_LOOP instead of max frame count to ensure perfect looping
+    total_frames = FRAMES_FOR_LOOP
     frames = []
     frame_durations = []
     
@@ -124,6 +159,7 @@ def create_star_background():
         frame_durations.append(100)
     
     existing_stars = []
+    star_data = []  # List to store star information (position, image, size)
     
     # Draw debug grid lines if enabled
     if DEBUG_SHOW_GRID:
@@ -136,7 +172,7 @@ def create_star_background():
             for y in range(0, CANVAS_SIZE[1] + 1, CELL_SIZE[1]):
                 draw.line([(0, y), (CANVAS_SIZE[0], y)], fill=DEBUG_GRID_COLOR, width=1)
 
-    # Place one star in each cell
+    # First pass: determine initial star positions using grid
     for cell_x in range(CELLS_PER_SIDE):
         for cell_y in range(CELLS_PER_SIDE):
             cell_bounds = get_cell_bounds(cell_x, cell_y)
@@ -165,46 +201,35 @@ def create_star_background():
                 if position is None:
                     continue
                 
-                # Place the star
-                with Image.open(star_file) as star:
-                    n_frames, durations = get_gif_info(star_file)
-                    star.seek(0)
-                    
-                    x, y = position
-                    existing_stars.append((position, star_size))
+                # Store star data for animation
+                star_data.append((position, star_file, star_size))
+                existing_stars.append((position, star_size))
+                break
 
-                    # Determine if star will be static
-                    is_static = random.random() < STATIC_STAR_CHANCE
-                    if is_static:
-                        # Choose random frame to freeze on
-                        static_frame = random.randint(0, n_frames - 1)
-                        star.seek(static_frame)
-                        static_frame = star.convert('RGBA')
-                    
-                    # Random frame offset
-                    frame_offset = random.randint(0, n_frames - 1)
-                    
-                    # Determine speed variation
-                    speed_multiplier = 1.0
-                    if not is_static and random.random() < SPEED_VARIATION_CHANCE:
-                        speed_multiplier = random.uniform(*SPEED_VARIATION_RANGE)
-                    
-                    for frame_idx in range(total_frames):
-                        if is_static:
-                            frames[frame_idx].paste(static_frame, (x, y), static_frame)
-                        else:
-                            star.seek(0)  # Reset to start
-                            star_frame_idx = (frame_idx + frame_offset) % n_frames
-                            for _ in range(star_frame_idx):  # Seek to correct frame
-                                star.seek(star.tell() + 1)
-                            star_frame = star.convert('RGBA')
-                            frames[frame_idx].paste(star_frame, (x, y), star_frame)
-                            # Adjust frame duration based on speed multiplier
-                            frame_durations[frame_idx] = max(
-                                frame_durations[frame_idx],
-                                int(durations[star_frame_idx] * speed_multiplier)
-                            )
-                break  # Successfully placed a star, move to next cell
+    # Second pass: animate all frames with falling motion
+    for frame_idx in range(total_frames):
+        # Update positions for this frame
+        current_positions = update_star_positions([pos for pos, _, _ in star_data], frame_idx)
+        
+        # Draw stars at their current positions
+        for (_, star_file, _), (x, y) in zip(star_data, current_positions):
+            with Image.open(star_file) as star:
+                n_frames, durations = get_gif_info(star_file)
+                # Make star animation loop within our total frames
+                star_frame_idx = frame_idx % n_frames
+                
+                # Seek to correct frame in star animation
+                star.seek(0)
+                for _ in range(star_frame_idx):
+                    star.seek(star.tell() + 1)
+                
+                star_frame = star.convert('RGBA')
+                frames[frame_idx].paste(star_frame, (int(x), int(y)), star_frame)
+                # Store original duration, will be modified for star animation speed later
+                frame_durations[frame_idx] = max(
+                    frame_durations[frame_idx],
+                    int(durations[star_frame_idx] / GLOBAL_SPEED_MULTIPLIER)  # Apply star animation speed here
+                )
 
     # Save the resulting animation
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
@@ -212,7 +237,8 @@ def create_star_background():
         OUTPUT_FILE,
         save_all=True,
         append_images=frames[1:],
-        duration=[int(d / GLOBAL_SPEED_MULTIPLIER) for d in frame_durations],  # Apply global speed multiplier
+        # Apply fall speed multiplier to control overall animation speed
+        duration=[int(20 / FALL_SPEED_MULTIPLIER) for _ in frame_durations],  # Base duration of 20ms
         loop=0,
         optimize=False,
         disposal=2

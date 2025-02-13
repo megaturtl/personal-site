@@ -22,7 +22,7 @@
 
 .site-name {
     font-family: var(--font-headings);
-    font-size: var(--text-sm);
+    font-size: var(--text-size-small);
     font-weight: var(--weight-bold);
     color: var(--color-heading);
 }
@@ -39,7 +39,7 @@
 }
 
 .nav-links a {
-    font-size: var(--text-sm);
+    font-size: var(--text-size-small);
     color: var(--color-text);
     transition: color 0.2s ease;
 }
