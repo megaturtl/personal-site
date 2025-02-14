@@ -11,14 +11,23 @@ Object.values(TURTL_STATES).forEach(src => {
     preloadedImages[src] = img;
 });
 
+let isInTimeout = false;
+
 function handleTurtlClick() {
     const turtl = document.getElementById('turtl');
-    if (!turtl || turtl.src.includes(TURTL_STATES.JUMP)) return;
+    if (!turtl || turtl.src.includes(TURTL_STATES.JUMP) || isInTimeout) return;
 
     turtl.src = preloadedImages[TURTL_STATES.JUMP].src;
 
     // Calculate duration of jump gif (52 frames at 12fps)
     const jumpDuration = (52 / 12) * 1000;
+    const jumpTimeout = (4/12) * 1000;
+
+    isInTimeout = true;
+    
+    setTimeout(() => {
+        isInTimeout = false;
+    }, jumpTimeout);
 
     setTimeout(() => {
         turtl.src = preloadedImages[TURTL_STATES.SLEEP].src;
