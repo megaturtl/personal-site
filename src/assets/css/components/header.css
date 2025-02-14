@@ -2,8 +2,11 @@
     display: flex;
     flex-direction: column;
 }
+
 /* Spread out each header horizontally */
-.header-top, .header-middle, .header-bottom {
+.header-top,
+.header-middle,
+.header-bottom {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -23,7 +26,7 @@
 }
 
 .header-bottom {
-    background-color: var(--color-neutral-2);
+    background-color: var(--color-neutral-dark);
 }
 
 .site-title {
@@ -42,7 +45,7 @@
     gap: var(--space-md);
 }
 
-.social-links img{
+.social-links img {
     width: var(--text-size-medium);
 }
 
@@ -57,13 +60,34 @@
     font-size: var(--text-size-huge);
 }
 
+.nav-links li {
+    line-height: var(--line-height-tight);
+}
+
 /* Color cycling for navigation links */
-.nav-links li:nth-child(1) a { color: var(--color-2); }
-.nav-links li:nth-child(2) a { color: var(--color-3); }
-.nav-links li:nth-child(3) a { color: var(--color-4); }
-.nav-links li:nth-child(4) a { color: var(--color-5); }
-.nav-links li:nth-child(5) a { color: var(--color-6); }
-.nav-links li:nth-child(6) a { color: var(--color-neutral-white); }
+.nav-links li:nth-child(1) a {
+    color: var(--color-2);
+}
+
+.nav-links li:nth-child(2) a {
+    color: var(--color-3);
+}
+
+.nav-links li:nth-child(3) a {
+    color: var(--color-4);
+}
+
+.nav-links li:nth-child(4) a {
+    color: var(--color-5);
+}
+
+.nav-links li:nth-child(5) a {
+    color: var(--color-6);
+}
+
+.nav-links li:nth-child(6) a {
+    color: var(--color-neutral-white);
+}
 
 #now-playing {
     display: flex;
@@ -111,9 +135,34 @@
     border: none;
     cursor: pointer;
     height: var(--text-size-large);
+    transition: transform 0.5s ease-in-out;
 }
 
 #theme-toggle span {
     font-size: var(--text-size-large);
     line-height: 1.1;
+}
+
+#theme-toggle:hover {
+    transform: rotate(8deg);
+}
+
+#visitor-count {
+    display: flex;
+    gap: var(--space-sm);
+    font-family: var(--font-code);
+    font-weight: var(--weight-normal);
+    font-size: var(--text-size-regular);
+    position: absolute;
+    right: var(--space-lg);
+    top: var(--space-md);
+    color: var(--color-neutral-white);
+}
+
+#visitor-count span {
+    background-color: var(--color-neutral-white);
+    color: var(--color-neutral-black);
+    padding: var(--space-xs) var(--space-sm);
+    line-height: 1;
+    border-radius: var(--border-radius-sm);
 }

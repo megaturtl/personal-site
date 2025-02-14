@@ -34,8 +34,8 @@
 */
 @font-face {
   font-family: 'Author-Variable';
-  src: url('/assets/fonts/Author/Author-Variable.woff2') format('woff2'),
-       url('/assets/fonts/Author/Author-Variable.woff') format('woff');
+  src: url('Author-Variable.woff2') format('woff2'),
+       url('Author-Variable.woff') format('woff');
   font-weight: 200 700;
   font-display: swap;
   font-style: normal;
@@ -50,8 +50,8 @@
 */
 @font-face {
   font-family: 'Author-VariableItalic';
-  src: url('/assets/fonts/Author/Author-VariableItalic.woff2') format('woff2'),
-       url('/assets/fonts/Author/Author-VariableItalic.woff') format('woff');
+  src: url('Author-VariableItalic.woff2') format('woff2'),
+       url('Author-VariableItalic.woff') format('woff');
   font-weight: 200 700;
   font-display: swap;
   font-style: italic;

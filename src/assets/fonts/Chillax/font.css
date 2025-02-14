@@ -19,8 +19,8 @@
 */
 @font-face {
   font-family: 'Chillax-Variable';
-  src: url('/assets/fonts/Chillax/Chillax-Variable.woff2') format('woff2'),
-       url('/assets/fonts/Chillax/Chillax-Variable.woff') format('woff');
+  src: url('Chillax-Variable.woff2') format('woff2'),
+       url('Chillax-Variable.woff') format('woff');
   font-weight: 200 700;
   font-style: normal;
 }

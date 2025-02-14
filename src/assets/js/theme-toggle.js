@@ -82,4 +82,4 @@ if (document.readyState === 'loading') {
 }
 
 // Make toggle function available globally
-window.toggleTheme = toggleTheme; 
+window.toggleTheme = toggleTheme;

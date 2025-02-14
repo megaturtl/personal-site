@@ -1,0 +1,11 @@
+<script>
+    // Immediately set theme to prevent wrong theme flashing
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document
+        .documentElement
+        .setAttribute('data-theme', savedTheme);
+</script>
+
+<script src="./assets/js/theme-toggle.js" defer></script>
+<script src="./assets/js/lastfm-now-playing.js" defer></script>
+<script src="./assets/js/turtl-jump.js" defer></script>

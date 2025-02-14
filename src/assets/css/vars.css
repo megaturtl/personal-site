@@ -48,14 +48,16 @@
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 
               "Liberation Mono", "Courier New", monospace;
+
   --font-avara-bold: 'Avara_Bold', var(--font-sans);
   --font-avara-black: 'Avara_Black', var(--font-sans);
   --font-avara-bold-italic: 'Avara_Bold Italic', var(--font-sans);
   --font-author: 'Author-Variable', var(--font-sans);
   --font-chillax: 'Chillax-Variable', var(--font-sans);
+  --font-nunito: 'Nunito-Variable', var(--font-sans);
   
   /* Applied Typography */
-  --font-body: var(--font-sans);
+  --font-body: var(--font-nunito);
   --font-headings: var(--font-author);
   --font-code: var(--font-mono);
 
@@ -66,9 +68,9 @@
   --weight-bold: 700;
 
   /* Line Heights */
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+  --line-height-tight: 1;
+  --line-height-normal: 1.2;
+  --line-height-relaxed: 1.5;
 
   /* Letter Spacing */
   --tracking-tight: -0.025em;

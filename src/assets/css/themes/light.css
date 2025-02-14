@@ -22,8 +22,8 @@
   --color-neutral-white: #ffffff;
 
   --color-neutral-main: var(--color-neutral-white); /* Main neutral color for background, etc. */
-  --color-neutral-2: var(--color-neutral-dark); /* Secondary neutral color for subtler backgrounds, etc. */
-  --color-neutral-3: var(--color-neutral-light); /* Tertirary neutral color for less emphasised text etc. */
+  --color-neutral-2: var(--color-neutral-light); /* Secondary neutral color for subtler backgrounds, etc. */
+  --color-neutral-3: var(--color-neutral-dark); /* Tertirary neutral color for less emphasised text etc. */
   --color-neutral-4: var(--color-neutral-black); /* Opposite neutral color for text, icons etc. */
 
   /* Applied Colors */
