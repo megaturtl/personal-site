@@ -1,0 +1,6 @@
+name = "ga-analytics-worker"
+main = "src/index.js"
+compatibility_date = "2025-02-17"
+
+[observability.logs]
+enabled = true

@@ -46,13 +46,8 @@ if (elements.albumCover) {
 
 // Optimised API call
 async function httpGet(url) {
-    try {
-        const response = await fetch(url);
-        return await response.text();
-    } catch (error) {
-        console.error('Failed to fetch:', error);
-        return null;
-    }
+    const response = await fetch(url);
+    return await response.text();
 }
 
 // converts unix time to relative time text (eg. 2 hours ago)

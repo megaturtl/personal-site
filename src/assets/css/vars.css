@@ -13,7 +13,7 @@
 
   /* Content Padding */
   --container-padding: var(--space-md) var(--space-lg);
-  
+
   /* Typography Scale (Major Third) */
   --heading-size-h1: 5.61rem;
   --heading-size-h2: 4.209rem;
@@ -28,7 +28,7 @@
   --text-size-regular: 1rem;
   --text-size-small: 0.8rem;
   --text-size-tiny: 0.64rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -42,12 +42,10 @@
 
 
   /* Font Families */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
-
-               Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 
-              "Liberation Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 
   --font-avara-bold: 'Avara_Bold', var(--font-sans);
   --font-avara-black: 'Avara_Black', var(--font-sans);
@@ -55,7 +53,7 @@
   --font-author: 'Author-Variable', var(--font-sans);
   --font-chillax: 'Chillax-Variable', var(--font-sans);
   --font-nunito: 'Nunito-Variable', var(--font-sans);
-  
+
   /* Applied Typography */
   --font-body: var(--font-nunito);
   --font-headings: var(--font-author);
@@ -76,4 +74,4 @@
   --tracking-tight: -0.025em;
   --tracking-normal: 0em;
   --tracking-wide: 0.025em;
-} 
+}

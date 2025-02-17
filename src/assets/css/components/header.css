@@ -158,7 +158,7 @@
     transform: rotate(8deg);
 }
 
-#visitor-count {
+#visitor-counter {
     display: flex;
     gap: var(--space-sm);
     font-family: var(--font-code);
@@ -170,7 +170,13 @@
     color: var(--color-neutral-white);
 }
 
-#visitor-count span {
+#visitor-number {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-xs);
+}
+
+#visitor-number span {
     background-color: var(--color-neutral-white);
     color: var(--color-neutral-black);
     padding: var(--space-xs) var(--space-sm);
