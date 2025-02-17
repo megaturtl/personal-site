@@ -9,7 +9,7 @@
 .site-footer p {
     font-size: var(--text-size-regular);
 
-    color: var(--color-text);
+    color: var(--color-text-inverted);
 }
 
 .footer-links {

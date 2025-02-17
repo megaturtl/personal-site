@@ -29,7 +29,8 @@
   /* Applied Colors */
   --color-bg: var(--color-neutral-main);
   --color-title: var(--color-neutral-white);
-  --color-text: var(--color-neutral-4);
+  --color-text: var(--color-neutral-white);
+  --color-text-inverted: var(--color-neutral-black);
   --color-link: var(--color-main);
   --color-link-hover: var(--color-neutral-3);
 

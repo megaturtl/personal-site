@@ -114,7 +114,7 @@
 
 #now-playing div a {
     font-size: var(--text-size-regular);
-    color: var(--color-text);
+    color: var(--color-text-inverted);
 }
 
 #now-playing #date a {
@@ -131,13 +131,13 @@
     align-items: flex-end;
 }
 
-#turtl {
+.turtl {
     width: var(--heading-size-h1);
     image-rendering: pixelated;
     cursor: pointer;
 }
 
-#turtl:active {
+.turtl:active {
     transform: scale(0.95);
 }
 
