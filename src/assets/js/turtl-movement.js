@@ -1,6 +1,6 @@
 const turtlControls = (() => {
     const config = {
-        TRIGGER: 'click', // Trigger type (click, mouseover, etc.)
+        POKE_TRIGGER: 'click', // Trigger type (click, mouseover, etc.)
         STATES: {
             IDLE: '/assets/images/turtl-sleep.gif',
             JUMP: '/assets/images/turtl-jump.gif',
@@ -10,13 +10,17 @@ const turtlControls = (() => {
             JUMP: (52 / 12) * 1000, // Duration of jump animation before reverting (frames/fps)
             BOP: 0                // Bop continues until something else happens
         },
+        SOUNDS: {
+            POKE: '/assets/sounds/hit.ogg'
+        }
     };
 
     let idleTimeout,
         currentState = 'IDLE',
         prevState = 'IDLE',
         blockUntil = 0,
-        turtlElement = null;
+        turtlElement = null,
+        pokeSound = null;
 
     const setTurtlState = (state, remember = true) => {
         if (!turtlElement) return;
@@ -47,16 +51,25 @@ const turtlControls = (() => {
 
     const getCurrentState = () => currentState;
 
-    const handleTrigger = () => {
+    const handlePoke = () => {
         if (!turtlElement) return;
         setTurtlState('JUMP', false);
+        if (pokeSound) {
+            pokeSound.currentTime = 0; // Reset sound to start so pitch gets affected each click
+            pokeSound.playbackRate = 0.8 + (Math.random() * 0.4); // Random between 0.8 and 1.2 for the pitch
+            pokeSound.play().catch(e => console.warn('Failed to play poke sound:', e));
+        }
     };
 
     const init = () => {
         turtlElement = document.getElementById('turtl');
         if (!turtlElement) return;
+        
+        pokeSound = new Audio(config.SOUNDS.POKE);
+        pokeSound.preservesPitch = false;
+        
         setTurtlState('IDLE');
-        turtlElement.addEventListener(config.TRIGGER, handleTrigger);
+        turtlElement.addEventListener(config.POKE_TRIGGER, handlePoke);
     };
 
     // Initialise on DOM ready

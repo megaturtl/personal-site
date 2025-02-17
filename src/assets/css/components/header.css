@@ -146,15 +146,16 @@
     border: none;
     cursor: pointer;
     height: var(--text-size-large);
+}
+
+#theme-icon {
+    font-size: var(--text-size-large);
+    line-height: 1.1;
+    display: block;
     transition: transform 0.5s ease-in-out;
 }
 
-#theme-toggle span {
-    font-size: var(--text-size-large);
-    line-height: 1.1;
-}
-
-#theme-toggle:hover {
+#theme-toggle:hover #theme-icon {
     transform: rotate(8deg);
 }
 

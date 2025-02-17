@@ -83,3 +83,33 @@ a:hover {
 .icon {
   filter: brightness(0) saturate(100%) invert(var(--is-dark));
 }
+
+.tooltipped {
+  position: relative;
+}
+
+.tooltipped .tooltip {
+  visibility: hidden;
+  opacity: 0;
+  max-width: 12rem;
+  width: max-content;
+  background-color: var(--color-neutral-dark);
+  border: 3px solid var(--color-5);
+  color: var(--color-text);
+  text-align: center;
+  padding: 0.5rem;
+  
+  position: absolute;
+  z-index: 100;
+  top: 100%;
+  transition: opacity 0.4s ease, visibility 0s ease 0.4s;
+
+  font-family: var(--font-code);
+  font-size: var(--text-size-small);
+}
+
+.tooltipped:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0s ease;
+}

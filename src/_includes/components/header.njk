@@ -11,9 +11,17 @@
         </div>
         <div id="now-playing">
             <img id="album-cover">
-            <div id="artist"></div>
+            <div id="artist" class="tooltipped">
+                <div id="artist-tooltip" class="tooltip">
+                    <p>I've listened to this artist x times</p>
+                </div>
+            </div>
             <div id="separator"></div>
-            <div id="track"></div>
+            <div id="track" class="tooltipped">
+                <div id="track-tooltip" class="tooltip">
+                    <p>I've listened to this song x times</p>
+                </div>
+            </div>
             <div id="date"></div>
         </div>
     </div>
@@ -21,7 +29,10 @@
     <div class="header-middle">
         <a href="/" class="site-title">megaturtl</a>
 
-        <div id="visitor-counter">
+        <div id="visitor-counter" class="tooltipped">
+            <div class="tooltip">
+                <p>This might be lower than normal counters since I'm excluding bots :p</p>
+            </div>
             <p>you are visitor:</p>
             <span id="visitor-number">
                 <span>0</span>
@@ -61,7 +72,10 @@
             </ul>
         </nav>
 
-        <button onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle Theme">
+        <button class="tooltipped" onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle Theme">
+            <div class="tooltip">
+                <p>Change theme!</p>
+            </div>
             <span id="theme-icon" aria-hidden="true">🌙</span>
         </button>
     </div>

@@ -9,7 +9,9 @@ const elements = {
     date: document.getElementById('date'),
     nowPlaying: document.getElementById('now-playing'),
     albumCover: document.getElementById('album-cover'),
-    separator: document.getElementById('separator')
+    separator: document.getElementById('separator'),
+    artistTooltip: document.querySelector('#artist-tooltip p'),
+    trackTooltip: document.querySelector('#track-tooltip p')
 };
 
 // Initialise DOM elements once
@@ -73,6 +75,28 @@ function relativeTime(time, time_text) {
         return time_text
 }
 
+// Get artist play count
+async function getArtistPlayCount(artistName) {
+    const url = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&username=${username}&api_key=${LASTFM_API_KEY}&format=json`;
+    const response = await httpGet(url);
+    if (!response) return null;
+    
+    const json = JSON.parse(response);
+    const playCount = parseInt(json.artist?.stats?.userplaycount) || 0;
+    return playCount;
+}
+
+// Get track play count
+async function getTrackPlayCount(artistName, trackName) {
+    const url = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=${encodeURIComponent(artistName)}&track=${encodeURIComponent(trackName)}&username=${username}&api_key=${LASTFM_API_KEY}&format=json`;
+    const response = await httpGet(url);
+    if (!response) return null;
+    
+    const json = JSON.parse(response);
+    const playCount = parseInt(json.track?.userplaycount) || 0;
+    return playCount;
+}
+
 // Update current track
 async function updateNowPlaying() {
     const response = await httpGet(url);
@@ -103,6 +127,29 @@ async function updateNowPlaying() {
         const relative_time = last_track.date ? 
             relativeTime(last_track.date.uts, last_track.date["#text"]) : null;
 
+        // Get play counts
+        const artistPlayCount = await getArtistPlayCount(currentTrack.artist);
+        const trackPlayCount = await getTrackPlayCount(currentTrack.artist, currentTrack.name);
+
+        // Update tooltips with play count information
+        if (elements.artistTooltip) {
+            elements.artistTooltip.textContent = !artistPlayCount || artistPlayCount === 0
+                ? "This is my first time listening to this artist!"
+                : `I've listened to this artist ${artistPlayCount} time${artistPlayCount === 1 ? '' : 's'}`;
+        }
+
+        if (elements.trackTooltip) {
+            if (last_track.loved == "1") {
+                elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times and it's one of my favourites!`;
+            } else if (trackPlayCount === 0) {
+                elements.trackTooltip.textContent = "This is my first time listening to this song!";
+            } else if (trackPlayCount === 1) {
+                elements.trackTooltip.textContent = "I've listened to this song once!";
+            } else {
+                elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times!`;
+            }
+        }
+
         // Batch DOM updates
         requestAnimationFrame(() => {
             trackLinkElem.href = last_track.url;
@@ -110,7 +157,7 @@ async function updateNowPlaying() {
             artistLinkElem.href = last_track.artist.url;
             artistLinkElem.textContent = last_track.artist.name;
             albumLinkElem.href = last_track.url;
-            heartSpan.textContent = last_track.loved == "1" ? "❤️" : "";
+            heartSpan.textContent = last_track.loved == "1" ? " ❤️" : "";
             userLinkElem.textContent = relative_time ? `(${relative_time})` : "(now)";
             elements.albumCover.src = last_track.image[1]["#text"];
             elements.nowPlaying?.classList.add('fade-in');
