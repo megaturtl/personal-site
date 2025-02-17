@@ -1,0 +1,8 @@
+{
+    "layout": "base.njk",
+    "tags": "sitemap",
+    "sitemap": {
+        "changefreq": "weekly",
+        "priority": 0.8
+    }
+}

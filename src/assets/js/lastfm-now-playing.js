@@ -1,14 +1,58 @@
-// get your own last.fm api key from https://www.last.fm/api/account/create
 const LASTFM_API_KEY = "7db421fc6880c777f75ba5ed8604c196"
-const username = "megaturtl" // change username here
+const username = "megaturtl"
 const url = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&format=json&extended=true&api_key=" + LASTFM_API_KEY + "&limit=1&user=" + username
 
-// make API call
-function httpGet(url) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", url, false);
-	xmlHttp.send(null);
-	return xmlHttp.responseText;
+// Cache DOM elements
+const elements = {
+    track: document.getElementById('track'),
+    artist: document.getElementById('artist'),
+    date: document.getElementById('date'),
+    nowPlaying: document.getElementById('now-playing'),
+    albumCover: document.getElementById('album-cover'),
+    separator: document.getElementById('separator')
+};
+
+// Initialise DOM elements once
+const trackLinkElem = document.createElement('a');
+trackLinkElem.id = "track";
+trackLinkElem.target = "_blank";
+
+const artistLinkElem = document.createElement('a');
+artistLinkElem.id = 'artist';
+artistLinkElem.target = "_blank";
+
+const albumLinkElem = document.createElement('a');
+albumLinkElem.id = 'album';
+albumLinkElem.target = "_blank";
+
+const heartSpan = document.createElement('span');
+heartSpan.id = 'heart';
+
+const userLinkElem = document.createElement('a');
+userLinkElem.target = "_blank";
+userLinkElem.href = "https://www.last.fm/user/" + username;
+
+// Append elements once
+if (elements.track) elements.track.appendChild(trackLinkElem);
+if (elements.track) elements.track.appendChild(heartSpan);
+if (elements.separator) elements.separator.appendChild(document.createTextNode("-"));
+if (elements.artist) elements.artist.appendChild(artistLinkElem);
+if (elements.date) elements.date.appendChild(userLinkElem);
+
+if (elements.albumCover) {
+    elements.albumCover.parentNode.insertBefore(albumLinkElem, elements.albumCover);
+    albumLinkElem.appendChild(elements.albumCover);
+}
+
+// Optimised API call
+async function httpGet(url) {
+    try {
+        const response = await fetch(url);
+        return await response.text();
+    } catch (error) {
+        console.error('Failed to fetch:', error);
+        return null;
+    }
 }
 
 // converts unix time to relative time text (eg. 2 hours ago)
@@ -34,76 +78,55 @@ function relativeTime(time, time_text) {
         return time_text
 }
 
-var json = JSON.parse(httpGet(url));
-var last_track = json.recenttracks.track[0]
-var track = last_track.name
-var trackLink = last_track.url
-var artistLink = last_track.artist.url
-var artist = last_track.artist.name
-let relative_time = null
-if (last_track.date) {
-    var unix_date = last_track.date.uts
-    var date_text = last_track.date["#text"]
-    relative_time = relativeTime(unix_date, date_text)
+// Update current track
+async function updateNowPlaying() {
+    const response = await httpGet(url);
+    if (!response) return;
+
+    const json = JSON.parse(response);
+    const last_track = json.recenttracks.track[0];
+    
+    const currentTrack = {
+        name: last_track.name,
+        artist: last_track.artist.name,
+        loved: last_track.loved == "1",
+        nowplaying: last_track["@attr"]?.nowplaying === "true"
+    };
+    
+    // Update Turtl state based on now playing status
+    if (window.turtlControls) {
+        const desiredState = currentTrack.nowplaying ? 'BOP' : 'IDLE';
+        if (window.turtlControls.getCurrentState() !== desiredState) {
+            window.turtlControls.setTurtlState(desiredState);
+        }
+    }
+    
+    // Only update if track changed
+    if (!window.lastTrackInfo || 
+        JSON.stringify(currentTrack) !== JSON.stringify(window.lastTrackInfo)) {
+        
+        const relative_time = last_track.date ? 
+            relativeTime(last_track.date.uts, last_track.date["#text"]) : null;
+
+        // Batch DOM updates
+        requestAnimationFrame(() => {
+            trackLinkElem.href = last_track.url;
+            trackLinkElem.textContent = last_track.name;
+            artistLinkElem.href = last_track.artist.url;
+            artistLinkElem.textContent = last_track.artist.name;
+            albumLinkElem.href = last_track.url;
+            heartSpan.textContent = last_track.loved == "1" ? "❤️" : "";
+            userLinkElem.textContent = relative_time ? `(${relative_time})` : "(now)";
+            elements.albumCover.src = last_track.image[1]["#text"];
+            elements.nowPlaying?.classList.add('fade-in');
+        });
+
+        window.lastTrackInfo = currentTrack;
+    }
 }
-var now_playing = (last_track["@attr"] == undefined) ? false : true
-var imageLink = last_track.image[1]["#text"]
-var loved = last_track.loved == "1"
 
-nowplayingElem = document.getElementById('now-playing')
-trackElem = document.getElementById('track')
-seperatorElem = document.getElementById('separator')
-artistElem = document.getElementById('artist')
-dateElem = document.getElementById('date')
-nowplayingElem = document.getElementById('now-playing')
-albumcoverElem = document.getElementById('album-cover')
+// Update on page load
+updateNowPlaying();
 
-// Create link wrapper for album cover
-albumLinkElem = document.createElement('a')
-albumLinkElem.href = "https://www.last.fm/user/" + username
-albumLinkElem.target = "_blank"
-
-trackLinkElem = document.createElement('a')
-trackLinkElem.id = "track"
-trackLinkElem.href = trackLink
-trackLinkElem.target = "_blank"
-trackLinkElem.textContent = track
-
-seperatorTextElem = document.createElement('a')
-seperatorTextElem.textContent = "-"
-
-artistLinkElem = document.createElement('a')
-artistLinkElem.id = 'artist'
-artistLinkElem.href = artistLink
-artistLinkElem.target = "_blank"
-artistLinkElem.textContent = artist
-
-heartSpan = document.createElement('span')
-heartSpan.id = 'heart'
-heartSpan.textContent = loved ? "❤️" : ""
-
-userLinkElem = document.createElement('a')
-userLinkElem.href = "https://www.last.fm/user/" + username
-userLinkElem.target = "_blank"
-userLinkElem.textContent = (relative_time != null) ? `(${relative_time})` : "(now)"
-
-trackElem.appendChild(trackLinkElem)
-trackElem.appendChild(heartSpan)
-seperatorElem.appendChild(seperatorTextElem)
-artistElem.appendChild(artistLinkElem)
-dateElem.appendChild(userLinkElem)
-albumcoverElem.src = imageLink
-
-// Wrap album cover in link
-albumcoverElem.parentNode.insertBefore(albumLinkElem, albumcoverElem)
-albumLinkElem.appendChild(albumcoverElem)
-
-// Fade in the now playing element  
-nowplayingElem.classList.add('fade-in')
-
-console.log(
-    "Artist: " + artist + "\n" +
-    "Track: " + track + "\n" +
-    "Date: " + relative_time + "\n" +
-    "Now playing: " + now_playing + "\n" +
-    "Loved: " + loved)
+// Check for updates every 3 seconds
+setInterval(updateNowPlaying, 3000);

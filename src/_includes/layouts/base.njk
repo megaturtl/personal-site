@@ -1,31 +1,44 @@
 {# Base template for all normal pages to use #}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ description | default('My website') }}">
-    <title>{% if title %}{{ title }} - {% endif %}{{ site.name }}</title>
-    
-    <!-- Page-specific styles -->
-    {% if pageCSS %}
-    <link rel="stylesheet" href="./assets/css/pages/{{ pageCSS }}.css">
-    {% endif %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{{ description | default('My website') }}">
+        <title>
+            {% if title %}{{ title }} - {% endif %}{{ site.name }}</title>
 
-    {% include "global-css.njk" %}
+        <!-- Favicons -->
+        <link rel="icon" type="image/png" href="/assets/icons/favicons/favicon-96x96.png" sizes="96x96"/>
+        <link rel="icon" type="image/svg+xml" href="/assets/icons/favicons/favicon.svg"/>
+        <link rel="shortcut icon" href="/assets/icons/favicons/favicon.ico"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/favicons/apple-touch-icon.png"/>
+        <meta name="apple-mobile-web-app-title" content="megaturtl"/>
+        <link rel="manifest" href="/assets/icons/favicons/site.webmanifest"/>
 
-    {% include "global-js.njk" %}
-</head>
-<body>
-    <div class="site-container">
-        {% include "components/header.njk" %}
+        <!-- Page-specific styles -->
+        {% if pageCSS %}
+            <link rel="stylesheet" href="/assets/css/pages/{{ pageCSS }}.css">
+        {% endif %}
 
-        <div class="page-content">
-            <h2 class="page-title">{{ title }}</h2>
-            {{ content | safe }}
+        {% include "global-css.njk" %}
+
+        {% include "global-js.njk" %}
+    </head>
+    <body>
+        <div class="site-container">
+            {% include "components/header.njk" %}
+
+            <div class="page-body">
+                {% include "components/sidebar.njk" %}
+
+                <div class="page-content">
+                    <h2 class="page-title">{{ title }}</h2>
+                    {{ content | safe }}
+                </div>
+            </div>
+
+            {% include "components/footer.njk" %}
         </div>
-
-        {% include "components/footer.njk" %}
-    </div>
-</body>
-</html> 
+    </body>
+</html>

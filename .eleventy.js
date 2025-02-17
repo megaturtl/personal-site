@@ -1,66 +1,105 @@
-const minifyHtml = require('./build-scripts/minify-html');
-const minifyJs = require('./build-scripts/minify-js');
-const minifyCss = require('./build-scripts/minify-css');
-const analyseAssets = require('./build-scripts/analyse-assets').analyseAssets;
+// Imports
+const pluginMinifier = require("@sherby/eleventy-plugin-files-minifier");
+const pluginSitemap = require("@quasibit/eleventy-plugin-sitemap");
 
-module.exports = function(eleventyConfig) {
-  // Environment variables
-  const isProd = process.env.ELEVENTY_ENV === 'production';
+// Configs
+const configCss = require("./src/config/css");
+const configJs = require("./src/config/javascript");
+const configSitemap = require("./src/config/sitemap");
 
-  // Asset handling
-  if (isProd) {
-    // In production, minify CSS and JS before copying
-    eleventyConfig.addPassthroughCopy({
-      "src/assets/favicons": "assets/favicons"
+// Environment check
+const isProduction = process.env.ELEVENTY_ENV === 'production';
+
+module.exports = function (eleventyConfig) {
+    /**=====================================================================
+          EXTENSIONS - Recognising non-default languages as templates 
+    =======================================================================*/
+    /** https://www.11ty.dev/docs/languages/custom/ */
+
+    /**
+     *  CSS EXTENSION
+     *  Setting up CSS files to be recognised as aN eleventy template language. This allows our minifier to read CSS files and minify them
+     */
+    eleventyConfig.addTemplateFormats("css");
+    eleventyConfig.addExtension("css", configCss);
+
+    /**
+     *  JS EXTENSION
+     *  Sets up JS files as an eleventy template language, which are compiled by esbuild. Allows bundling and minification of JS
+     */
+    eleventyConfig.addTemplateFormats("js");
+    eleventyConfig.addExtension("js", configJs);
+    /**=====================================================================
+                                END EXTENSIONS
+    =======================================================================*/
+
+    /**=====================================================================
+                  PLUGINS - Adds additional eleventy functionality 
+    =======================================================================*/
+    /** https://www.11ty.dev/docs/plugins/ */
+
+    // Debug collection
+    eleventyConfig.addCollection("debug", function(collectionApi) {
+        console.log("All items:", collectionApi.getAll().map(item => item.url));
+        console.log("Sitemap items:", collectionApi.getFilteredByTag("sitemap").map(item => item.url));
+        return [];
     });
 
-    // Process CSS
-    eleventyConfig.addTemplateFormats(minifyCss.extension);
-    eleventyConfig.addExtension(minifyCss.extension, {
-      outputFileExtension: minifyCss.extension,
-      compile: async function(content) {
-        return async () => minifyCss.compile(content);
-      }
+    /**
+     *  AUTOMATIC SITEMAP GENERATION
+     *  Automatically generate a sitemap, using the domain in _data/site.json
+     *  https://www.npmjs.com/package/@quasibit/eleventy-plugin-sitemap
+     */
+    eleventyConfig.addPlugin(pluginSitemap, configSitemap);
+
+    /**
+     *  MINIFIER
+     *  When in production ("npm run build" is ran), minify all HTML, CSS, JSON, XML, XSL and webmanifest files.
+     *  https://github.com/benjaminrancourt/eleventy-plugin-files-minifier
+     */
+    if (isProduction) {
+        eleventyConfig.addPlugin(pluginMinifier);
+    }
+    /**=====================================================================
+                                END PLUGINS
+    =======================================================================*/
+
+    /**======================================================================
+       PASSTHROUGHS - Copy source files to /public with no 11ty processing
+    ========================================================================*/
+    /** https://www.11ty.dev/docs/copy/ */
+
+    eleventyConfig.addPassthroughCopy("./src/assets", {
+        filter: ["**/*", "!**/*.js"],
     });
+    eleventyConfig.addPassthroughCopy("./src/_redirects");
+    /**=====================================================================
+                              END PASSTHROUGHS
+    =======================================================================*/
 
-    // Process JS
-    eleventyConfig.addTemplateFormats(minifyJs.extension);
-    eleventyConfig.addExtension(minifyJs.extension, {
-      outputFileExtension: minifyJs.extension,
-      compile: async function(content) {
-        return async () => minifyJs.compile(content);
-      }
-    });
+    /**======================================================================
+                  SHORTCODES - Output data using JS at build time
+    ========================================================================*/
+    /** https://www.11ty.dev/docs/shortcodes/ */
 
-    // HTML Minification
-    eleventyConfig.addTransform("htmlmin", minifyHtml.transform);
+    /**
+     *  Gets the current year, which can be outputted with {% year %}. Used for the footer copyright. Updates with every build.
+     *  Use - {% year %}
+     */
+    eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
+    /**=====================================================================
+                                END SHORTCODES
+    =======================================================================*/
 
-    // Analyse and copy only used images in production
-    const imageManifest = analyseAssets();
-    imageManifest.used.forEach(image => {
-      eleventyConfig.addPassthroughCopy({
-        [`src/assets/images/${image}`]: `assets/images/${image}`
-      });
-    });
-  } else {
-    // In development, just copy assets and add source maps
-    eleventyConfig.addPassthroughCopy({
-      "src/assets": "assets"
-    });
-  }
-
-  // Watch target for all assets
-  eleventyConfig.addWatchTarget("./src/assets/");
-
-  return {
-    dir: {
-      input: "src",
-      output: "_site",
-      includes: "_includes",
-      layouts: "_includes/layouts",
-      data: "_data"
-    },
-    templateFormats: ["njk", "md"],
-    htmlTemplateEngine: "njk"
-  };
-}; 
+    return {
+        dir: {
+            input: "src",
+            output: "public",
+            includes: "_includes",
+            layouts: "_includes/layouts",
+            components: "_includes/components",
+            data: "_data",
+        },
+        htmlTemplateEngine: "njk",
+    };
+};
