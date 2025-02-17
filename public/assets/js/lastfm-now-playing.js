@@ -1,1 +1,105 @@
-(()=>{var w=(o,s,t)=>new Promise((n,i)=>{var a=c=>{try{r(t.next(c))}catch(p){i(p)}},l=c=>{try{r(t.throw(c))}catch(p){i(p)}},r=c=>c.done?n(c.value):Promise.resolve(c.value).then(a,l);r((t=t.apply(o,s)).next())});var C="7db421fc6880c777f75ba5ed8604c196",k="megaturtl",E="https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&format=json&extended=true&api_key="+C+"&limit=1&user="+k,e={track:document.getElementById("track"),artist:document.getElementById("artist"),date:document.getElementById("date"),nowPlaying:document.getElementById("now-playing"),albumCover:document.getElementById("album-cover"),separator:document.getElementById("separator")},d=document.createElement("a");d.id="track";d.target="_blank";var u=document.createElement("a");u.id="artist";u.target="_blank";var m=document.createElement("a");m.id="album";m.target="_blank";var g=document.createElement("span");g.id="heart";var f=document.createElement("a");f.target="_blank";f.href="https://www.last.fm/user/"+k;e.track&&e.track.appendChild(d);e.track&&e.track.appendChild(g);e.separator&&e.separator.appendChild(document.createTextNode("-"));e.artist&&e.artist.appendChild(u);e.date&&e.date.appendChild(f);e.albumCover&&(e.albumCover.parentNode.insertBefore(m,e.albumCover),m.appendChild(e.albumCover));function y(o){return w(this,null,function*(){try{return yield(yield fetch(o)).text()}catch(s){return console.error("Failed to fetch:",s),null}})}function b(o,s){var t=Math.round(Date.now()/1e3),n=t-o;let i=60,a=i*60,l=a*24;if(n<a){let r=Math.round(n/i);return r+" min"+(r!=1?"s":"")+" ago"}if(n>=a&&n<l){let r=Math.round(n/a);return r+" hr"+(r!=1?"s":"")+" ago"}if(n>=l)return s}function h(){return w(this,null,function*(){var i;let o=yield y(E);if(!o)return;let t=JSON.parse(o).recenttracks.track[0],n={name:t.name,artist:t.artist.name,loved:t.loved=="1",nowplaying:((i=t["@attr"])==null?void 0:i.nowplaying)==="true"};if(window.turtlControls){let a=n.nowplaying?"BOP":"IDLE";window.turtlControls.getCurrentState()!==a&&window.turtlControls.setTurtlState(a)}if(!window.lastTrackInfo||JSON.stringify(n)!==JSON.stringify(window.lastTrackInfo)){let a=t.date?b(t.date.uts,t.date["#text"]):null;requestAnimationFrame(()=>{var l;d.href=t.url,d.textContent=t.name,u.href=t.artist.url,u.textContent=t.artist.name,m.href=t.url,g.textContent=t.loved=="1"?"\u2764\uFE0F":"",f.textContent=a?`(${a})`:"(now)",e.albumCover.src=t.image[1]["#text"],(l=e.nowPlaying)==null||l.classList.add("fade-in")}),window.lastTrackInfo=n}})}h();setInterval(h,3e3);})();
+(() => {
+  // src/assets/js/lastfm-now-playing.js
+  var LASTFM_API_KEY = "7db421fc6880c777f75ba5ed8604c196";
+  var username = "megaturtl";
+  var url = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&format=json&extended=true&api_key=" + LASTFM_API_KEY + "&limit=1&user=" + username;
+  var elements = {
+    track: document.getElementById("track"),
+    artist: document.getElementById("artist"),
+    date: document.getElementById("date"),
+    nowPlaying: document.getElementById("now-playing"),
+    albumCover: document.getElementById("album-cover"),
+    separator: document.getElementById("separator")
+  };
+  var trackLinkElem = document.createElement("a");
+  trackLinkElem.id = "track";
+  trackLinkElem.target = "_blank";
+  var artistLinkElem = document.createElement("a");
+  artistLinkElem.id = "artist";
+  artistLinkElem.target = "_blank";
+  var albumLinkElem = document.createElement("a");
+  albumLinkElem.id = "album";
+  albumLinkElem.target = "_blank";
+  var heartSpan = document.createElement("span");
+  heartSpan.id = "heart";
+  var userLinkElem = document.createElement("a");
+  userLinkElem.target = "_blank";
+  userLinkElem.href = "https://www.last.fm/user/" + username;
+  if (elements.track)
+    elements.track.appendChild(trackLinkElem);
+  if (elements.track)
+    elements.track.appendChild(heartSpan);
+  if (elements.separator)
+    elements.separator.appendChild(document.createTextNode("-"));
+  if (elements.artist)
+    elements.artist.appendChild(artistLinkElem);
+  if (elements.date)
+    elements.date.appendChild(userLinkElem);
+  if (elements.albumCover) {
+    elements.albumCover.parentNode.insertBefore(albumLinkElem, elements.albumCover);
+    albumLinkElem.appendChild(elements.albumCover);
+  }
+  async function httpGet(url2) {
+    try {
+      const response = await fetch(url2);
+      return await response.text();
+    } catch (error) {
+      console.error("Failed to fetch:", error);
+      return null;
+    }
+  }
+  function relativeTime(time, time_text) {
+    var time_now = Math.round(Date.now() / 1e3);
+    var time_diff = time_now - time;
+    let SEC_IN_MIN = 60;
+    let SEC_IN_HOUR = SEC_IN_MIN * 60;
+    let SEC_IN_DAY = SEC_IN_HOUR * 24;
+    if (time_diff < SEC_IN_HOUR) {
+      let minutes = Math.round(time_diff / SEC_IN_MIN);
+      return minutes + " min" + (minutes != 1 ? "s" : "") + " ago";
+    }
+    if (time_diff >= SEC_IN_HOUR && time_diff < SEC_IN_DAY) {
+      let hours = Math.round(time_diff / SEC_IN_HOUR);
+      return hours + " hr" + (hours != 1 ? "s" : "") + " ago";
+    }
+    if (time_diff >= SEC_IN_DAY)
+      return time_text;
+  }
+  async function updateNowPlaying() {
+    const response = await httpGet(url);
+    if (!response)
+      return;
+    const json = JSON.parse(response);
+    const last_track = json.recenttracks.track[0];
+    const currentTrack = {
+      name: last_track.name,
+      artist: last_track.artist.name,
+      loved: last_track.loved == "1",
+      nowplaying: last_track["@attr"]?.nowplaying === "true"
+    };
+    if (window.turtlControls) {
+      const desiredState = currentTrack.nowplaying ? "BOP" : "IDLE";
+      if (window.turtlControls.getCurrentState() !== desiredState) {
+        window.turtlControls.setTurtlState(desiredState);
+      }
+    }
+    if (!window.lastTrackInfo || JSON.stringify(currentTrack) !== JSON.stringify(window.lastTrackInfo)) {
+      const relative_time = last_track.date ? relativeTime(last_track.date.uts, last_track.date["#text"]) : null;
+      requestAnimationFrame(() => {
+        trackLinkElem.href = last_track.url;
+        trackLinkElem.textContent = last_track.name;
+        artistLinkElem.href = last_track.artist.url;
+        artistLinkElem.textContent = last_track.artist.name;
+        albumLinkElem.href = last_track.url;
+        heartSpan.textContent = last_track.loved == "1" ? "\u2764\uFE0F" : "";
+        userLinkElem.textContent = relative_time ? `(${relative_time})` : "(now)";
+        elements.albumCover.src = last_track.image[1]["#text"];
+        elements.nowPlaying?.classList.add("fade-in");
+      });
+      window.lastTrackInfo = currentTrack;
+    }
+  }
+  updateNowPlaying();
+  setInterval(updateNowPlaying, 3e3);
+})();
+//# sourceMappingURL=lastfm-now-playing.js.map

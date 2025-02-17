@@ -1,1 +1,41 @@
- :root[data-theme="candy"] {--is-dark: 0;--color-red: #ff004c;--color-orange: #ff5e00;--color-yellow: #ffdd00;--color-green: #00e63c;--color-blue: #006eff;--color-purple: #9500ff;--color-main: var(--color-red);--color-2: var(--color-orange);--color-3: var(--color-yellow);--color-4: var(--color-green);--color-5: var(--color-blue);--color-6: var(--color-purple);--color-neutral-black: #0a0a0a;--color-neutral-dark: #171717;--color-neutral-light: #7f7f7f;--color-neutral-white: #ffffff;--color-neutral-main: var(--color-neutral-white);--color-neutral-2: var(--color-neutral-dark);--color-neutral-3: var(--color-neutral-black);--color-bg: var(--color-neutral-main);--color-text: var(--color-neutral-black);--color-link: var(--color-main);--color-link-hover: var(--color-neutral-light);--color-button-bg: var(--color-main);--color-button-text: var(--color-neutral-white);--color-button-hover: var(--color-neutral-light);--color-border: var(--color-main);--color-shadow: rgba(0, 0, 0, 0.3);}
+/* Candy Theme */
+:root[data-theme="candy"] {
+  --is-dark: 0; /* 0 = light, 1 = dark */
+
+  --color-red: #ff004c;
+  --color-orange: #ff5e00;
+  --color-yellow: #ffdd00;
+  --color-green: #00e63c;
+  --color-blue: #006eff;
+  --color-purple: #9500ff;
+
+  --color-main: var(--color-red);
+  --color-2: var(--color-orange);
+  --color-3: var(--color-yellow);
+  --color-4: var(--color-green);
+  --color-5: var(--color-blue);
+  --color-6: var(--color-purple);
+
+  --color-neutral-black: #0a0a0a;
+  --color-neutral-dark: #171717;
+  --color-neutral-light: #7f7f7f;
+  --color-neutral-white: #ffffff;
+
+  --color-neutral-main: var(--color-neutral-white); /* Main neutral color for background, etc. */
+  --color-neutral-2: var(--color-neutral-dark); /* For less emphasised text etc. */
+  --color-neutral-3: var(--color-neutral-black); /* Neutral color for text, etc. */
+
+  /* Applied Colors */
+  --color-bg: var(--color-neutral-main);
+  --color-text: var(--color-neutral-black);
+  --color-link: var(--color-main);
+  --color-link-hover: var(--color-neutral-light);
+
+  /* UI Elements */
+  --color-button-bg: var(--color-main);
+  --color-button-text: var(--color-neutral-white);
+  --color-button-hover: var(--color-neutral-light);
+
+  --color-border: var(--color-main);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+}
