@@ -122,12 +122,18 @@
     color: var(--color-neutral-3);
 }
 
-#turtl {
-    width: var(--heading-size-h1);
-    image-rendering: pixelated;
+#turtl-container {
     position: absolute;
     right: var(--space-lg);
     bottom: -0.625rem;
+    height: 7.5rem;
+    display: flex;
+    align-items: flex-end;
+}
+
+#turtl {
+    width: var(--heading-size-h1);
+    image-rendering: pixelated;
     cursor: pointer;
 }
 

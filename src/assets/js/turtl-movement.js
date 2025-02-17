@@ -31,7 +31,7 @@ const turtlControls = (() => {
         }
         currentState = state;
 
-        // Force a GIF reload by appending a timestamp
+        // Force a GIF reload by appending a timestamp. This sucks but I have to because of Firefox
         turtlElement.src = `${config.STATES[state]}?t=${now}`;
         clearTimeout(idleTimeout);
 
