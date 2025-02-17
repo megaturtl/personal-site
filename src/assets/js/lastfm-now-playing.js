@@ -14,6 +14,14 @@ const elements = {
     trackTooltip: document.querySelector('#track-tooltip p')
 };
 
+// Hide tooltips initially
+if (elements.artistTooltip) {
+    elements.artistTooltip.parentElement.style.display = 'none';
+}
+if (elements.trackTooltip) {
+    elements.trackTooltip.parentElement.style.display = 'none';
+}
+
 // Initialise DOM elements once
 const trackLinkElem = document.createElement('a');
 trackLinkElem.id = "track";
@@ -112,45 +120,32 @@ async function updateNowPlaying() {
         nowplaying: last_track["@attr"]?.nowplaying === "true"
     };
     
-    // Update Turtl state based on now playing status
-    if (window.turtlControls) {
-        const desiredState = currentTrack.nowplaying ? 'BOP' : 'IDLE';
-        if (window.turtlControls.getCurrentState() !== desiredState) {
-            window.turtlControls.setTurtlState(desiredState);
+    // Always update the turtle state and now playing status
+    requestAnimationFrame(() => {
+        if (window.turtlControls) {
+            const desiredState = currentTrack.nowplaying ? 'BOP' : 'IDLE';
+            if (window.turtlControls.getCurrentState() !== desiredState) {
+                window.turtlControls.setTurtlState(desiredState);
+            }
         }
-    }
+    });
     
-    // Only update if track changed
+    // Update track info immediately if changed
     if (!window.lastTrackInfo || 
         JSON.stringify(currentTrack) !== JSON.stringify(window.lastTrackInfo)) {
         
         const relative_time = last_track.date ? 
             relativeTime(last_track.date.uts, last_track.date["#text"]) : null;
 
-        // Get play counts
-        const artistPlayCount = await getArtistPlayCount(currentTrack.artist);
-        const trackPlayCount = await getTrackPlayCount(currentTrack.artist, currentTrack.name);
-
-        // Update tooltips with play count information
+        // Hide tooltips while we fetch new data
         if (elements.artistTooltip) {
-            elements.artistTooltip.textContent = !artistPlayCount || artistPlayCount === 0
-                ? "This is my first time listening to this artist!"
-                : `I've listened to this artist ${artistPlayCount} time${artistPlayCount === 1 ? '' : 's'}`;
+            elements.artistTooltip.parentElement.style.display = 'none';
         }
-
         if (elements.trackTooltip) {
-            if (last_track.loved == "1") {
-                elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times and it's one of my favourites!`;
-            } else if (trackPlayCount === 0) {
-                elements.trackTooltip.textContent = "This is my first time listening to this song!";
-            } else if (trackPlayCount === 1) {
-                elements.trackTooltip.textContent = "I've listened to this song once!";
-            } else {
-                elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times!`;
-            }
+            elements.trackTooltip.parentElement.style.display = 'none';
         }
 
-        // Batch DOM updates
+        // Update all immediate information right away
         requestAnimationFrame(() => {
             trackLinkElem.href = last_track.url;
             trackLinkElem.textContent = last_track.name;
@@ -163,7 +158,46 @@ async function updateNowPlaying() {
             elements.nowPlaying?.classList.add('fade-in');
         });
 
+        // Update our track info cache immediately
         window.lastTrackInfo = currentTrack;
+
+        // Fetch and update tooltips asynchronously in the background
+        Promise.all([
+            getArtistPlayCount(currentTrack.artist),
+            getTrackPlayCount(currentTrack.artist, currentTrack.name)
+        ]).then(([artistPlayCount, trackPlayCount]) => {
+            // Update tooltips whenever they're ready
+            if (elements.artistTooltip) {
+                elements.artistTooltip.textContent = !artistPlayCount || artistPlayCount === 0
+                    ? "This is my first time listening to this artist!"
+                    : `I've listened to this artist ${artistPlayCount} time${artistPlayCount === 1 ? '' : 's'}`;
+                elements.artistTooltip.parentElement.style.display = 'block';
+            }
+
+            if (elements.trackTooltip) {
+                if (last_track.loved == "1") {
+                    elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times and it's one of my favourites!`;
+                } else if (trackPlayCount === 0) {
+                    elements.trackTooltip.textContent = "This is my first time listening to this song!";
+                } else if (trackPlayCount === 1) {
+                    elements.trackTooltip.textContent = "I've listened to this song once!";
+                } else {
+                    elements.trackTooltip.textContent = `I've listened to this song ${trackPlayCount} times!`;
+                }
+                elements.trackTooltip.parentElement.style.display = 'block';
+            }
+        }).catch(e => {
+            console.warn('Failed to load play counts:', e);
+            // Show tooltips with fallback message on error
+            if (elements.artistTooltip) {
+                elements.artistTooltip.textContent = "Couldn't load artist play count";
+                elements.artistTooltip.parentElement.style.display = 'block';
+            }
+            if (elements.trackTooltip) {
+                elements.trackTooltip.textContent = "Couldn't load track play count";
+                elements.trackTooltip.parentElement.style.display = 'block';
+            }
+        });
     }
 }
 
