@@ -41,4 +41,6 @@
 
   --color-border: var(--color-main);
   --color-shadow: rgba(0, 0, 0, 0.3);
+
+  --img-streamers: url(/assets/images/vines.png);
 }

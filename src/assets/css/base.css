@@ -80,11 +80,11 @@ code {
 a {
   color: var(--color-link);
   text-decoration: none;
-  transition: filter 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 a:hover {
-  filter: opacity(80%);
+  opacity: 0.8;
 }
 
 ul {

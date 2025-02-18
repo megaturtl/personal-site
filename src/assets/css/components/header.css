@@ -27,6 +27,8 @@
 
 .header-bottom {
     background-color: var(--color-neutral-dark);
+    transition: background-color 0.3s ease;
+    position: relative;
 }
 
 .site-title {
@@ -52,9 +54,7 @@
 .nav-links {
     display: flex;
     flex-direction: row;
-    gap: var(--space-md);
     list-style: none;
-
     font-family: var(--font-headings);
     font-weight: var(--weight-bold);
     font-size: var(--text-size-huge);
@@ -63,6 +63,21 @@
 
 .nav-links li {
     line-height: var(--line-height-tight);
+    transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+    flex: 1;
+    text-align: center;
+    opacity: 1;
+    text-shadow: 0.5rem 1rem transparent;
+}
+
+.nav-links li a {
+    transition: color 0.3s ease;
+    display: block;
+    padding-right: var(--space-md);
+}
+
+.nav-links li:first-child a {
+    padding-left: 0;
 }
 
 /* Color cycling for navigation links */
@@ -88,6 +103,52 @@
 
 .nav-links li:nth-child(6) a {
     color: var(--color-neutral-white);
+}
+
+.nav-links:hover li {
+    opacity: 0;
+}
+
+.nav-links li:hover {
+    opacity: 1 !important;
+    letter-spacing: .2rem;
+    text-shadow: 0.5rem 1rem var(--color-neutral-dark);
+}
+
+.nav-links li:hover a {
+    color: var(--color-neutral-white) !important;
+    opacity: 1;
+}
+
+/* Makes background color change on hover */
+.nav-links li:nth-child(1):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(1):hover) {
+    background-color: var(--color-2);
+}
+
+.nav-links li:nth-child(2):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(2):hover) {
+    background-color: var(--color-3);
+}
+
+.nav-links li:nth-child(3):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(3):hover) {
+    background-color: var(--color-4);
+}
+
+.nav-links li:nth-child(4):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(4):hover) {
+    background-color: var(--color-5);
+}
+
+.nav-links li:nth-child(5):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(5):hover) {
+    background-color: var(--color-6);
+}
+
+.nav-links li:nth-child(6):hover ~ .header-bottom,
+.header-bottom:has(.nav-links li:nth-child(6):hover) {
+    background-color: var(--color-neutral-dark);
 }
 
 #now-playing {
@@ -137,6 +198,7 @@
     width: var(--heading-size-h1);
     image-rendering: pixelated;
     cursor: pointer;
+    z-index: 2;
 }
 
 .turtl:active {
@@ -147,7 +209,8 @@
     background: none;
     border: none;
     cursor: pointer;
-    height: var(--text-size-large);
+    height: 3rem;
+    z-index: 1;
 }
 
 #theme-icon {
