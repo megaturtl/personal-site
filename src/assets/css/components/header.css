@@ -58,6 +58,7 @@
     font-family: var(--font-headings);
     font-weight: var(--weight-bold);
     font-size: var(--text-size-huge);
+    padding: 0;
 }
 
 .nav-links li {
@@ -97,6 +98,8 @@
     gap: var(--space-sm);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+    font-size: var(--text-size-regular);
+    color: var(--color-text-inverted);
 }
 
 #now-playing.fade-in {
@@ -113,7 +116,6 @@
 }
 
 #now-playing div a {
-    font-size: var(--text-size-regular);
     color: var(--color-text-inverted);
 }
 

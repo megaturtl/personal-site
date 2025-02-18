@@ -11,7 +11,7 @@ html, body {
 
 /* Container */
 .site-container {
-  max-width: 1200px;
+  max-width: var(--site-max-width);
   margin: 0 auto;
   padding-left: var(--space-lg);
   padding-right: var(--space-lg);
@@ -31,18 +31,24 @@ body {
   transition: background-color 0.5s ease;
 }
 
-.page-body {
+.site-body {
   display: flex;
   gap: var(--space-lg);
-  flex: 1; /* This makes page-body take up remaining space */
+  flex: 1; /* This makes site-body take up remaining space */
   min-height: 0; /* Required for flex child to prevent overflow */
 }
 
-.page-content {
+main {
   width: 100%;
   background-color: var(--color-neutral-dark);
   padding: var(--container-padding);
   flex: 1; /* Allow content to grow */
+}
+
+.page-unique-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 /* Typography */
@@ -79,6 +85,14 @@ a {
 
 a:hover {
   filter: opacity(80%);
+}
+
+ul {
+  padding-left: var(--space-xl);
+}
+
+.page-title {
+  margin-bottom: var(--space-md);
 }
 
 .icon {

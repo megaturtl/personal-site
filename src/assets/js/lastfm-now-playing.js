@@ -168,9 +168,13 @@ async function updateNowPlaying() {
         ]).then(([artistPlayCount, trackPlayCount]) => {
             // Update tooltips whenever they're ready
             if (elements.artistTooltip) {
-                elements.artistTooltip.textContent = !artistPlayCount || artistPlayCount === 0
-                    ? "This is my first time listening to this artist!"
-                    : `I've listened to this artist ${artistPlayCount} time${artistPlayCount === 1 ? '' : 's'}`;
+                if (artistPlayCount === 0) {
+                    elements.artistTooltip.textContent = "This is my first time listening to this artist!";
+                } else if (artistPlayCount === 1) {
+                    elements.artistTooltip.textContent = "I've listened to this artist once!";
+                } else {
+                    elements.artistTooltip.textContent = `I've listened to this artist ${artistPlayCount} times!`;
+                }
                 elements.artistTooltip.parentElement.style.display = 'block';
             }
 

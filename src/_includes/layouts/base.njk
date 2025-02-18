@@ -29,13 +29,15 @@
         <div class="site-container">
             {% include "components/header.njk" %}
 
-            <div class="page-body">
+            <div class="site-body">
                 {% include "components/sidebar.njk" %}
 
-                <div class="page-content">
+                <main>
                     <h2 class="page-title">{{ title }}</h2>
-                    {{ content | safe }}
-                </div>
+                    <div class="page-unique-content">
+                        {{ content | safe }}
+                    </div>
+                </main>
             </div>
 
             {% include "components/footer.njk" %}
