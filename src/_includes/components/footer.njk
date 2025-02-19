@@ -1,7 +1,14 @@
 <footer class="site-footer">
-    <div class="buttons-banner">
-        <img title="Gort" src="/assets/images/buttons/gort.gif">
-        <img title="Barbed Wire" src="/assets/images/buttons/barbedwire.jpg">
+    <div id="stamps-banner">
+        {%- for stamp in collections.stamps -%}
+            <img title="{{ stamp.name }}" src="{{ stamp.path }}" alt="{{ stamp.name }}">
+        {%- endfor -%}
+    </div>
+
+    <div id="buttons-banner">
+        {%- for button in collections.buttons -%}
+            <img title="{{ button.name }}" src="{{ button.path }}" alt="{{ button.name }}">
+        {%- endfor -%}
     </div>
 
     <p>Congratulations! You scrolled further than 100% of users.</p>

@@ -24,11 +24,13 @@
     color: var(--color-neutral-3);
 }
 
-.buttons-banner {
+#stamps-banner, #buttons-banner {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     flex-direction: row;
     gap: var(--space-lg);
-    height: 56px;
+    max-width: var(--site-max-width);
 }
 
 #streamers {

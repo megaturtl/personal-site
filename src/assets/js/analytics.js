@@ -1,6 +1,6 @@
 async function updateUserCount() {
     // Fetch JSON from Cloudflare Worker endpoint
-    const response = await fetch('https://api.turtl.cc/');
+    const response = await fetch('https://api.turtl.cc/analytics/');
     const data = await response.json();
 
     const rawValue = data.totalUsers;

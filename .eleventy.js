@@ -1,6 +1,8 @@
 // Imports
 const pluginMinifier = require("@sherby/eleventy-plugin-files-minifier");
 const pluginSitemap = require("@quasibit/eleventy-plugin-sitemap");
+const fs = require('fs');
+const path = require('path');
 
 // Configs
 const configCss = require("./src/config/css");
@@ -42,6 +44,7 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addCollection("debug", function(collectionApi) {
         console.log("All items:", collectionApi.getAll().map(item => item.url));
         console.log("Sitemap items:", collectionApi.getFilteredByTag("sitemap").map(item => item.url));
+        console.log("Stamps collection:", collectionApi.getFilteredByTag("stamps"));
         return [];
     });
 
@@ -60,6 +63,30 @@ module.exports = function (eleventyConfig) {
     if (isProduction) {
         eleventyConfig.addPlugin(pluginMinifier);
     }
+
+    /**
+     *  COLLECTIONS
+     *  Adds all images from the stamps folder to the footer and buttons folder to the footer.
+     */
+    eleventyConfig.addCollection("stamps", function() {
+        const stampsDir = 'src/assets/images/stamps';
+        const files = fs.readdirSync(stampsDir);
+        
+        return files.map(file => ({
+            name: path.parse(file).name,
+            path: `/assets/images/stamps/${file}`
+        }));
+    });
+
+    eleventyConfig.addCollection("buttons", function() {
+        const buttonsDir = 'src/assets/images/buttons';
+        const files = fs.readdirSync(buttonsDir);
+
+        return files.map(file => ({
+            name: path.parse(file).name,
+            path: `/assets/images/buttons/${file}`
+        }));
+    });
     /**=====================================================================
                                 END PLUGINS
     =======================================================================*/
