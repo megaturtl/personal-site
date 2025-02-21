@@ -1,7 +1,10 @@
 .sidebar {
     width: 15rem;
-    background-color: var(--color-neutral-dark);
     padding: var(--container-padding);
+    background-color: var(--color-neutral-main);
+    border-width: 0.25rem;
+    border-style: solid;
+    border-image: linear-gradient(315deg, var(--color-blue), var(--color-red)) 1;
 }
 
 .sites {

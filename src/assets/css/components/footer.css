@@ -34,12 +34,15 @@
 }
 
 #buttons-banner {
-    background-color: var(--color-neutral-dark);
     max-width: var(--site-max-width);
-    height: 41px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-width: 0.25rem;
+    border-style: solid;
+    border-image: linear-gradient(270deg, var(--color-blue), var(--color-red)) 1;
+    background-color: var(--color-neutral-main);
 }
 
 #buttons-banner marquee {
