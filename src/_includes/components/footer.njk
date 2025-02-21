@@ -1,13 +1,18 @@
+<div id="buttons-banner">
+    <marquee>
+        {%- for button in collections.buttons -%}
+            <img title="{{ button.name }}" src="{{ button.path }}" alt="{{ button.name }}">
+        {%- endfor -%}
+        {%- for button in collections.buttons -%}
+            <img title="{{ button.name }}" src="{{ button.path }}" alt="{{ button.name }}">
+        {%- endfor -%}
+    </marquee>
+</div>
+
 <footer class="site-footer">
     <div id="stamps-banner">
         {%- for stamp in collections.stamps -%}
             <img title="{{ stamp.name }}" src="{{ stamp.path }}" alt="{{ stamp.name }}">
-        {%- endfor -%}
-    </div>
-
-    <div id="buttons-banner">
-        {%- for button in collections.buttons -%}
-            <img title="{{ button.name }}" src="{{ button.path }}" alt="{{ button.name }}">
         {%- endfor -%}
     </div>
 

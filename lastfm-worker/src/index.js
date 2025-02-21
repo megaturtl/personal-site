@@ -5,7 +5,7 @@ const allowedOrigins = [
     'http://localhost:8080'
 ];
 
-const CACHE_TTL = 3; // seconds
+const CACHE_TTL = 6; // seconds
 const CACHE_CONTROL = `public, max-age=${CACHE_TTL}`;
 
 // Shared utilities
@@ -25,27 +25,33 @@ const createResponse = (data, status = 200, corsHeaders, cache = true) => {
     return new Response(JSON.stringify(data), { status, headers });
 };
 
-const createErrorResponse = (message, status = 500, corsHeaders, details = null) => createResponse(
+const createErrorResponse = (
+    message, 
+    status = 500, 
+    corsHeaders, 
+    details = null,
+    cache = status === 404 // Only cache 404s by default
+) => createResponse(
     { error: message, ...(details && { details }) },
     status,
     corsHeaders,
-    false // Don't cache errors
+    cache
 );
 
 async function getFromCache(request, env) {
-  const cache = caches.default;
-  const cachedResponse = await cache.match(request);
-  
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-  return null;
+    const cache = caches.default;
+    const cachedResponse = await cache.match(request);
+    
+    if (cachedResponse) {
+        return cachedResponse;
+    }
+    return null;
 }
 
 async function cacheResponse(request, response, env) {
-  const cache = caches.default;
-  await cache.put(request, response.clone());
-  return response;
+    const cache = caches.default;
+    await cache.put(request, response.clone());
+    return response;
 }
 
 const fetchLastFM = async (method, params, env) => {
@@ -91,14 +97,68 @@ function relativeTime(time, time_text) {
   return time_text;
 }
 
+// Shared track fetching logic
+async function fetchCurrentTrack(env) {
+    const data = await fetchLastFM('user.getrecenttracks', {
+        limit: 1,
+        user: env.LASTFM_USERNAME
+    }, env);
+
+    const track = data.recenttracks?.track?.[0];
+    if (!track) {
+        return null;
+    }
+
+    return track;
+}
+
+// Route handlers
+const routes = {
+    'now-playing': (env, corsHeaders) => getNowPlaying(env, corsHeaders),
+    'now-playing-preview': (env, corsHeaders) => getNowPlayingPreview(env, corsHeaders),
+    'artist-info': (env, corsHeaders, params) => {
+        const artistName = params.get('artist');
+        if (!artistName) {
+            return createErrorResponse('Artist name is required', 400, corsHeaders, null, false);
+        }
+        return getArtistInfo(env, artistName, corsHeaders);
+    },
+    'track-info': (env, corsHeaders, params) => {
+        const trackName = params.get('track');
+        const artist = params.get('artist');
+        if (!trackName || !artist) {
+            return createErrorResponse('Track name and artist are required', 400, corsHeaders, null, false);
+        }
+        return getTrackInfo(env, artist, trackName, corsHeaders);
+    }
+};
+
 export default {
     async fetch(request, env, ctx) {
         const origin = request.headers.get('Origin');
+        
+        // Reject unauthorized origins immediately
+        if (origin && !allowedOrigins.includes(origin)) {
+            return createErrorResponse('Unauthorized', 403, corsHeaders, null, false);
+        }
+        
         const corsHeaders = getCorsHeaders(origin);
 
         // Handle CORS preflight
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
+        }
+
+        // Check rate limit using only the client's IP as the key
+        const clientIP = request.headers.get('cf-connecting-ip') || 'unknown';
+        const rateLimitResult = await env.API_RATE_LIMITER.limit({ key: clientIP });
+
+        // Add rate limit headers to all responses
+        corsHeaders['X-RateLimit-Limit'] = '60';
+        corsHeaders['X-RateLimit-Period'] = '60';
+        
+        if (!rateLimitResult.success) {
+            return createErrorResponse('Too many requests', 429, corsHeaders, null, false);
         }
 
         // Try to get from cache first
@@ -108,37 +168,16 @@ export default {
         }
 
         const url = new URL(request.url);
-        const endpoint = url.pathname.split('/').pop();
-
+        // Normalize path by removing extra slashes and getting last segment
+        const endpoint = url.pathname.replace(/\/+/g, '/').split('/').filter(Boolean).pop();
+        
         try {
-            let response;
-            switch (endpoint) {
-                case 'now-playing':
-                    response = await getNowPlaying(env, corsHeaders);
-                    break;
-                case 'now-playing-preview':
-                    response = await getNowPlayingPreview(env, corsHeaders);
-                    break;
-                case 'artist-info': {
-                    const artistName = url.searchParams.get('artist');
-                    if (!artistName) {
-                        return createErrorResponse('Artist name is required', 400, corsHeaders);
-                    }
-                    response = await getArtistInfo(env, artistName, corsHeaders);
-                    break;
-                }
-                case 'track-info': {
-                    const trackName = url.searchParams.get('track');
-                    const artist = url.searchParams.get('artist');
-                    if (!trackName || !artist) {
-                        return createErrorResponse('Track name and artist are required', 400, corsHeaders);
-                    }
-                    response = await getTrackInfo(env, artist, trackName, corsHeaders);
-                    break;
-                }
-                default:
-                    return createErrorResponse('Not found', 404, corsHeaders);
+            const handler = routes[endpoint];
+            if (!handler) {
+                return createErrorResponse('Not found', 404, corsHeaders);
             }
+
+            const response = await handler(env, corsHeaders, url.searchParams);
 
             // Cache successful responses
             if (response.status === 200) {
@@ -149,20 +188,15 @@ export default {
             console.error(`Error in ${endpoint}:`, error);
             return createErrorResponse(error.message, 500, corsHeaders);
         }
-    },
+    }
 };
 
 async function getNowPlaying(env, corsHeaders) {
-    const data = await fetchLastFM('user.getrecenttracks', {
-        limit: 1,
-        user: env.LASTFM_USERNAME
-    }, env);
-
-    if (!data.recenttracks?.track?.length) {
+    const track = await fetchCurrentTrack(env);
+    if (!track) {
         return createErrorResponse('No track data found', 404, corsHeaders);
     }
 
-    const track = data.recenttracks.track[0];
     const relativeTimeStr = track.date ? 
         relativeTime(parseInt(track.date.uts), track.date['#text']) : 
         null;
@@ -171,9 +205,10 @@ async function getNowPlaying(env, corsHeaders) {
         track: {
             name: track.name,
             url: track.url,
-            'image-small': track.image?.[1]?.['#text'],
-            'image-medium': track.image?.[2]?.['#text'],
-            'image-large': track.image?.[3]?.['#text']
+            loved: track['@attr']?.loved === 'true',
+            imageSmall: track.image?.[1]?.['#text'],
+            imageMedium: track.image?.[2]?.['#text'],
+            imageLarge: track.image?.[3]?.['#text']
         },
         artist: {
             name: track.artist?.['#text'] || track.artist?.name,
@@ -183,8 +218,8 @@ async function getNowPlaying(env, corsHeaders) {
             name: track.album['#text'],
             url: `https://www.last.fm/music/${encodeURIComponent(track.artist?.['#text'] || track.artist?.name)}/${encodeURIComponent(track.album['#text'])}`
         } : null,
-        nowplaying: track['@attr']?.nowplaying === 'true',
-        date: track['@attr']?.nowplaying ? null : relativeTimeStr
+        isNowPlaying: track['@attr']?.nowplaying === 'true',
+        playedAt: track['@attr']?.nowplaying ? null : relativeTimeStr
     }, 200, corsHeaders);
 }
 
@@ -195,7 +230,22 @@ async function getArtistInfo(env, artistName, corsHeaders) {
     }, env);
 
     return createResponse({
-        playcount: data.artist?.stats?.userplaycount || '0'
+        artist: {
+            name: data.artist?.name,
+            url: data.artist?.url,
+            imageSmall: data.artist?.image?.[1]?.['#text'],
+            imageMedium: data.artist?.image?.[2]?.['#text'],
+            imageLarge: data.artist?.image?.[3]?.['#text'],
+            stats: {
+                userPlayCount: parseInt(data.artist?.stats?.userplaycount) || 0,
+                globalPlayCount: parseInt(data.artist?.stats?.playcount) || 0,
+                listeners: parseInt(data.artist?.stats?.listeners) || 0
+            },
+            tags: data.artist?.tags?.tag?.map(tag => ({
+                name: tag.name,
+                url: tag.url
+            })) || []
+        }
     }, 200, corsHeaders);
 }
 
@@ -207,18 +257,35 @@ async function getTrackInfo(env, artist, trackName, corsHeaders) {
     }, env);
 
     return createResponse({
-        playcount: data.track?.userplaycount || '0'
+        track: {
+            name: data.track?.name,
+            url: data.track?.url,
+            artist: {
+                name: data.track?.artist?.name,
+                url: data.track?.artist?.url
+            },
+            album: data.track?.album ? {
+                name: data.track.album.title,
+                url: data.track.album.url,
+                imageSmall: data.track.album?.image?.[1]?.['#text'],
+                imageMedium: data.track.album?.image?.[2]?.['#text'],
+                imageLarge: data.track.album?.image?.[3]?.['#text']
+            } : null,
+            stats: {
+                userPlayCount: parseInt(data.track?.userplaycount) || 0,
+                globalPlayCount: parseInt(data.track?.playcount) || 0,
+                listeners: parseInt(data.track?.listeners) || 0
+            },
+            tags: data.track?.toptags?.tag?.map(tag => ({
+                name: tag.name,
+                url: tag.url
+            })) || []
+        }
     }, 200, corsHeaders);
 }
 
 async function getNowPlayingPreview(env, corsHeaders) {
-    // Get current track data
-    const data = await fetchLastFM('user.getrecenttracks', {
-        limit: 1,
-        user: env.LASTFM_USERNAME
-    }, env);
-
-    const track = data.recenttracks?.track?.[0];
+    const track = await fetchCurrentTrack(env);
     if (!track) {
         return createErrorResponse('No track currently playing', 404, corsHeaders);
     }
@@ -270,15 +337,19 @@ async function getNowPlayingPreview(env, corsHeaders) {
 
         const streamData = await streamResponse.json();
         return createResponse({
-            preview_url: streamData.preview_mp3_128_url,
-            full_url: streamData.http_mp3_128_url,
-            track: track.name,
-            artist: track.artist?.['#text'] || track.artist?.name,
-            duration: foundTrack.duration,
-            waveform_url: foundTrack.waveform_url,
-            soundcloud_url: foundTrack.permalink_url
+            preview: {
+                previewUrl: streamData.preview_mp3_128_url,
+                fullUrl: streamData.http_mp3_128_url,
+                durationMs: foundTrack.duration,
+                waveformUrl: foundTrack.waveform_url,
+                soundCloudUrl: foundTrack.permalink_url
+            },
+            track: {
+                name: track.name,
+                artist: track.artist?.['#text'] || track.artist?.name
+            }
         }, 200, corsHeaders);
     } catch (error) {
-        return createErrorResponse('Failed to fetch preview', 500, corsHeaders, error.message);
+        return createErrorResponse('Failed to fetch preview', 500, corsHeaders, error.message, false);
     }
 } 

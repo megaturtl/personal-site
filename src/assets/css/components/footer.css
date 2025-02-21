@@ -24,13 +24,35 @@
     color: var(--color-neutral-3);
 }
 
-#stamps-banner, #buttons-banner {
+#stamps-banner {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     flex-direction: row;
     gap: var(--space-lg);
     max-width: var(--site-max-width);
+}
+
+#buttons-banner {
+    background-color: var(--color-neutral-dark);
+    max-width: var(--site-max-width);
+    height: 41px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#buttons-banner marquee {
+    height: 31px;
+}
+
+#buttons-banner img {
+    margin: 0 var(--space-xs);
+    transition: transform 0.3s ease;
+}
+
+#buttons-banner img:hover {
+    transform: scale(1.1);
 }
 
 #streamers {
