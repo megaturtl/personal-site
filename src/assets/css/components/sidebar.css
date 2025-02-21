@@ -1,5 +1,20 @@
 .sidebar {
-    width: 300px;
+    width: 15rem;
     background-color: var(--color-neutral-dark);
     padding: var(--container-padding);
+}
+
+.sites {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.site-buttons img {
+    transition: transform 0.3s ease;
+    margin: 0 var(--space-xs);
+}
+
+.site-buttons img:hover {
+    transform: scale(1.1);
 }

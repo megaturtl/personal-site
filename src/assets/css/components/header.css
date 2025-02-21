@@ -170,6 +170,7 @@
 #now-playing #album-cover {
     width: var(--text-size-medium);
     transition: transform 0.5s, opacity 0.5s ease-in-out;
+    display: block;
 }
 
 #now-playing #album-cover:hover {
