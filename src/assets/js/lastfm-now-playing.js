@@ -61,8 +61,8 @@ async function updateTooltips(artistName, trackName) {
                                  `I've listened to this ${type} ${count} times!`;
         };
 
-        updateTooltip(elements.artistTooltip, parseInt(artist.playcount) || 0, 'artist');
-        updateTooltip(elements.trackTooltip, parseInt(track.playcount) || 0, 'song');
+        updateTooltip(elements.artistTooltip, artist.artist?.stats?.userPlayCount || 0, 'artist');
+        updateTooltip(elements.trackTooltip, track.track?.stats?.userPlayCount || 0, 'track');
     } catch (error) {
         console.error('Error updating tooltips:', error);
     }
@@ -120,5 +120,38 @@ async function updateNowPlaying() {
 }
 
 // Initialise and start updates
-updateNowPlaying();
-setInterval(updateNowPlaying, 6000);
+let updateInterval;
+
+function startUpdates() {
+    updateNowPlaying();
+    updateInterval = setInterval(updateNowPlaying, 6000);
+}
+
+function stopUpdates() {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+    }
+}
+
+// Handle visibility changes
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopUpdates();
+    } else {
+        startUpdates();
+    }
+});
+
+// Initial start
+if (!document.hidden) {
+    startUpdates();
+} else {
+    // If page starts hidden, wait for it to become visible
+    document.addEventListener('visibilitychange', function onFirstVisible() {
+        if (!document.hidden) {
+            startUpdates();
+            document.removeEventListener('visibilitychange', onFirstVisible);
+        }
+    });
+}

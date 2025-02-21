@@ -29,6 +29,11 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   transition: background-color 0.5s ease;
+  background-image: url('/assets/images/star_background.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
 }
 
 .site-body {
