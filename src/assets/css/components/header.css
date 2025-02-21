@@ -37,6 +37,39 @@
     font-weight: var(--weight-bold);
     font-size: var(--heading-size-h1);
     line-height: var(--line-height-tight);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.125rem;
+    transition: letter-spacing 0.3s ease, text-shadow 0.2s ease;
+}
+
+#cc-shell {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: -0.5rem;
+}
+
+#cc-shell div{
+    height: var(--heading-size-h3);
+    width: var(--heading-size-h3);
+    background-image: url(/assets/images/shell-c.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    transition: transform 0.3s ease, background-image 0.3s ease;
+}
+
+.site-title:hover {
+    letter-spacing: 0.2rem;
+    text-shadow: 0.3rem 0.3rem var(--color-neutral-dark);
+    opacity: 1;
+}
+
+.site-title:hover #cc-shell div {
+    transform: rotate(90deg);
+    background-image: url(/assets/images/shell-c-eyes.png);
 }
 
 .social-links {
@@ -63,7 +96,7 @@
 
 .nav-links li {
     line-height: var(--line-height-tight);
-    transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+    transition: opacity 0.3s ease, letter-spacing 0.3s ease, text-shadow 0.2s ease;
     flex: 1;
     text-align: center;
     opacity: 1;
