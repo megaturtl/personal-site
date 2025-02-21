@@ -112,7 +112,7 @@
 .nav-links li:hover {
     opacity: 1 !important;
     letter-spacing: .2rem;
-    text-shadow: 0.5rem 1rem var(--color-neutral-dark);
+    text-shadow: 0.3rem 0.3rem var(--color-neutral-dark);
 }
 
 .nav-links li:hover a {
