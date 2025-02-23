@@ -1,0 +1,22 @@
+---
+title: Status Updates
+permalink: status/
+---
+
+<div class="status-list">
+    {% for status in statuses.statuses %}
+        <div class="status-item">
+            <div class="status-meta">
+                <span class="status-emoji-container tooltipped">
+                    <span class="tooltip">{{ status.emojiLabel }}</span>
+                    <span class="status-emoji">{{ status.emoji }}</span>
+                </span>
+                <time class="status-time" datetime="{{ status.date }}">
+                    {%- set dateObj = status.date | parseDate -%}
+                    {{ dateObj | formatDate }}
+                </time>
+            </div>
+            <p class="status-text">{{ status.text }}</p>
+        </div>
+    {% endfor %}
+</div>

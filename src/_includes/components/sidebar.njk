@@ -1,26 +1,49 @@
 <div class="sidebar">
-    <div class="sites">
-        <div class="sites-header">
-            <h6 style="text-align: center;">I love these sites!</h6>
-            <p style="text-align: center;">(you will too)</p>
-        </div>
 
-        <div class="site-buttons">
-            <marquee scrollamount="3">
-                <a href="https://doqmeat.com/" target="_blank"><img src="/assets/images/site-buttons/doqmeat.png" alt="doqmeat"></a>
-                <a href="https://nenrikido.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/nenrikido_button.gif" alt="nenrikido"></a>
-                <a href="https://irony-machine.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/irony-machine.png" alt="irony-machine"></a>
-                <a href="https://dreamcult.xyz/" target="_blank"><img src="/assets/images/site-buttons/dreamcult.gif" alt="dreamcult"></a>
-                <a href="https://atari404.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/atari404.gif" alt="atari404"></a>
-                
-            </marquee>
-            <marquee scrollamount="3" direction="right">
-                <a href="https://artwork.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/artworkbuttontotoro.gif" alt="artwork"></a>
-                <a href="https://paupowpow.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/paupowpow-button.png" alt="paupowpow"></a>
-                <a href="https://joppiesaus.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/joppiesaus.png" alt="joppiesaus"></a>
-                <a href="https://cinni.net/" target="_blank"><img src="/assets/images/site-buttons/cinnipinkbutton.png" alt="cinni's dream home"></a>
-                <a href="https://obby.dog/" target="_blank"><img src="/assets/images/site-buttons/vertpushbutton2.gif" alt="vertpush"></a>
-            </marquee>
+    <div class="status">
+        <div class="sidebar-header">
+            <h6>status</h6>
+        </div>
+        <div class="sidebar-content">
+            {%- set latestStatus = status | first -%}
+            <div class="status-meta">
+                <span class="status-emoji-container tooltipped">
+                    <span class="tooltip">{{ latestStatus.emojiLabel }}</span>
+                    <span class="status-emoji">{{ latestStatus.emoji }}</span>
+                </span>
+                <time class="status-time" datetime="{{ latestStatus.date }}">
+                    {%- set dateObj = latestStatus.date | parseDate -%}
+                    {{ dateObj | formatDate }}
+                </time>
+            </div>
+            <p class="status-text">{{ latestStatus.text }}</p>
+            <a href="/status" class="status-link">view all ></a>
+        </div>
+    </div>
+
+    <div class="sites">
+        <div class="sidebar-header">
+            <h6>cool cool sites</h6>
+        </div>
+        <div class="sidebar-content">
+            <div class="site-buttons">
+                <marquee scrollamount="3">
+                    <a href="https://doqmeat.com/" target="_blank"><img src="/assets/images/site-buttons/doqmeat.png" alt="doqmeat"></a>
+                    <a href="https://nenrikido.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/nenrikido_button.gif" alt="nenrikido"></a>
+                    <a href="https://irony-machine.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/irony-machine.png" alt="irony-machine"></a>
+                    <a href="https://dreamcult.xyz/" target="_blank"><img src="/assets/images/site-buttons/dreamcult.gif" alt="dreamcult"></a>
+                    <a href="https://atari404.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/atari404.gif" alt="atari404"></a>
+
+                </marquee>
+                <marquee scrollamount="3" direction="right">
+                    <a href="https://artwork.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/artworkbuttontotoro.gif" alt="artwork"></a>
+                    <a href="https://paupowpow.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/paupowpow-button.png" alt="paupowpow"></a>
+                    <a href="https://joppiesaus.neocities.org/" target="_blank"><img src="/assets/images/site-buttons/joppiesaus.png" alt="joppiesaus"></a>
+                    <a href="https://cinni.net/" target="_blank"><img src="/assets/images/site-buttons/cinnipinkbutton.png" alt="cinni's dream home"></a>
+                    <a href="https://obby.dog/" target="_blank"><img src="/assets/images/site-buttons/vertpushbutton2.gif" alt="vertpush"></a>
+                    <a href="https://melankorin.net/" target="_blank"><img src="/assets/images/site-buttons/melankorin.gif" alt="melankorin"></a>
+                </marquee>
+            </div>
         </div>
     </div>
 </div>

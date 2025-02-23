@@ -3,6 +3,7 @@ const pluginMinifier = require("@sherby/eleventy-plugin-files-minifier");
 const pluginSitemap = require("@quasibit/eleventy-plugin-sitemap");
 const fs = require('fs');
 const path = require('path');
+const filters = require('./src/_11ty/filters.js');
 
 // Configs
 const configCss = require("./src/config/css");
@@ -114,6 +115,10 @@ module.exports = function (eleventyConfig) {
      *  Use - {% year %}
      */
     eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
+
+    // Add date filters
+    eleventyConfig.addFilter('parseDate', filters.parseDate);
+    eleventyConfig.addFilter('formatDate', filters.formatDate);
     /**=====================================================================
                                 END SHORTCODES
     =======================================================================*/

@@ -41,7 +41,7 @@
     justify-content: center;
     border-width: 0.25rem;
     border-style: solid;
-    border-image: linear-gradient(270deg, var(--color-blue), var(--color-red)) 1;
+    border-color: var(--color-main);
     background-color: var(--color-neutral-main);
 }
 

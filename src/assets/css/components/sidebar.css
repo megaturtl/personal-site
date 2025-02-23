@@ -1,16 +1,30 @@
 .sidebar {
     width: 15rem;
-    padding: var(--container-padding);
-    background-color: var(--color-neutral-main);
-    border-width: 0.25rem;
-    border-style: solid;
-    border-image: linear-gradient(315deg, var(--color-blue), var(--color-red)) 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
 }
 
-.sites {
+.sidebar-header {
+    background-color: var(--color-main);
+    padding: 0.5rem 1rem;
+    text-align: center;
+}
+
+.sidebar-content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-width: 0.25rem;
+    border-style: solid;
+    border-color: var(--color-main);
+    background-color: var(--color-neutral-main);
+}
+
+.sites .sidebar-content {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .site-buttons img {
@@ -20,4 +34,37 @@
 
 .site-buttons img:hover {
     transform: scale(1.1);
+}
+
+.status .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.status-meta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.status-emoji {
+    font-size: var(--text-size-regular);
+}
+
+.status-time {
+    font-family: var(--font-code);
+    font-size: var(--text-size-small);
+    color: var(--color-neutral-3);
+}
+
+.status-text {
+    font-size: var(--text-size-regular);
+}
+
+.status-link {
+    font-family: var(--font-code);
+    font-size: var(--text-size-small);
+    color: var(--color-neutral-3);
 }
