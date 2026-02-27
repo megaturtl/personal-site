@@ -1,5 +1,4 @@
 // Imports
-const pluginMinifier = require("@sherby/eleventy-plugin-files-minifier");
 const pluginSitemap = require("@quasibit/eleventy-plugin-sitemap");
 const fs = require('fs');
 const path = require('path');
@@ -55,15 +54,6 @@ module.exports = function (eleventyConfig) {
      *  https://www.npmjs.com/package/@quasibit/eleventy-plugin-sitemap
      */
     eleventyConfig.addPlugin(pluginSitemap, configSitemap);
-
-    /**
-     *  MINIFIER
-     *  When in production ("npm run build" is ran), minify all HTML, CSS, JSON, XML, XSL and webmanifest files.
-     *  https://github.com/benjaminrancourt/eleventy-plugin-files-minifier
-     */
-    if (isProduction) {
-        eleventyConfig.addPlugin(pluginMinifier);
-    }
 
     /**
      *  COLLECTIONS

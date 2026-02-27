@@ -2,6 +2,7 @@ node_modules/
 _site/
 public/
 .vscode/
+.idea/
 .wrangler/
 ga-analytics-worker/node_modules/
 ga-analytics-worker/.wrangler/

@@ -15,11 +15,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy": "^3.1.2",
     "@minify-html/node": "^0.15.0",
-    "@sherby/eleventy-plugin-files-minifier": "^1.1.1",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.27.3",
     "glob": "^10.3.10"
   },
   "engines": {
