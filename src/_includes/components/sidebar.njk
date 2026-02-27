@@ -5,7 +5,7 @@
             <h6>status</h6>
         </div>
         <div class="sidebar-content">
-            {%- set latestStatus = status | first -%}
+            {%- set latestStatus = statuses | first -%}
             <div class="status-meta">
                 <span class="status-emoji-container tooltipped">
                     <span class="tooltip">{{ latestStatus.emojiLabel }}</span>

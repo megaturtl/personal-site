@@ -1,0 +1,27 @@
+
+.status-meta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.status-emoji {
+    font-size: var(--text-size-regular);
+}
+
+.status-time {
+    font-family: var(--font-code);
+    font-size: var(--text-size-small);
+    color: var(--color-neutral-3);
+}
+
+.status-text {
+    font-size: var(--text-size-regular);
+}
+
+.status-link {
+    font-family: var(--font-code);
+    font-size: var(--text-size-small);
+    color: var(--color-neutral-3);
+}
