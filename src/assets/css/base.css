@@ -3,6 +3,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  max-width: 100%;
 }
 
 html, body {
@@ -57,6 +58,12 @@ main {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+}
+
+.related-content-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
 /* Typography */
@@ -116,7 +123,7 @@ ul {
   opacity: 0;
   max-width: 12rem;
   width: max-content;
-  background-color: var(--color-neutral-dark);
+  background-color: var(--color-neutral-main);
   border: 3px solid var(--color-5);
   color: var(--color-text);
   text-align: center;

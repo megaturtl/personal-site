@@ -18,7 +18,7 @@
 
   --color-neutral-black: #0a0a0a;
   --color-neutral-dark: #171717;
-  --color-neutral-light: #7f7f7f;
+  --color-neutral-light: #adadad;
   --color-neutral-white: #ffffff;
 
   --color-neutral-main: var(--color-neutral-white); /* Main neutral color for background, etc. */
