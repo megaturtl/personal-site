@@ -1,44 +1,79 @@
-async function updateUserCount() {
-    const response = await fetch('https://api.turtl.cc/umami/');
-    const data = await response.json();
+// Immediately target this count so the number appears to load instantly
+const FALLBACK_VISITOR_COUNT = 1010;
 
-    const rawValue = data.visitorsAllTime;
-    const numericValue = parseInt(rawValue, 10);
-    const container = document.getElementById('visitor-number');
-    const animationDuration = Math.min(8000, Math.max(1000, 2000 + Math.log10(numericValue) * 1500)); // Logarithmic number scaling
+// Pad to at least this many digits
+const MIN_DIGITS = 5;
 
-    animateCountUp(container, 0, numericValue, animationDuration);
-}
+// Portion of the remaining distance to target to cover per frame.
+const EASING_FACTOR = 0.05;
 
-function animateCountUp(container, start, end, duration) {
-    const frameRate = 30;
-    const totalFrames = Math.round(duration / (1000 / frameRate));
-    let frame = 0;
+// Stop animating once within this many units of the target (basically makes sure it stops on a round number).
+const SNAP_THRESHOLD = 0.5;
 
-    function update() {
-        frame++;
-        const progress = Math.min(frame / totalFrames, 1);
-        const currentCount = Math.floor(start + (end - start) * progress);
+class DigitCounter {
+    constructor(container) {
+        this.container = container;
+        this.current = 0;
+        this.target = 0;
+        this.frameHandle = null;
+    }
 
-        // Convert to a zero-padded string at least 5 digits
-        const padded = currentCount.toString().padStart(5, '0');
+    // Point the counter at a new target. If it's already animating,
+    // this just redirects the existing loop without restarting.
+    setTarget(target) {
+        this.target = target;
+        if (this.frameHandle === null) {
+            this.tick();
+        }
+    }
 
-        // Clear and update spans
-        container.innerHTML = '';
+    tick() {
+        const distance = this.target - this.current;
+
+        if (Math.abs(distance) < SNAP_THRESHOLD) {
+            this.current = this.target;
+            this.render();
+            this.frameHandle = null;
+            return;
+        }
+
+        this.current += distance * EASING_FACTOR;
+        this.render();
+        this.frameHandle = requestAnimationFrame(() => this.tick());
+    }
+
+    render() {
+        const padded = Math.floor(this.current).toString().padStart(MIN_DIGITS, '0');
+
+        this.container.innerHTML = '';
         for (const digit of padded) {
             const span = document.createElement('span');
             span.className = 'digit';
             span.textContent = digit;
-            container.appendChild(span);
-        }
-
-        // Continue animation if not yet complete
-        if (frame < totalFrames) {
-            requestAnimationFrame(update);
+            this.container.appendChild(span);
         }
     }
+}
 
-    update(); // Start the animation loop
+async function updateUserCount() {
+    const container = document.getElementById('visitor-number');
+    const counter = new DigitCounter(container);
+
+    // Start ticking toward the fallback straight away
+    counter.setTarget(FALLBACK_VISITOR_COUNT);
+
+    try {
+        const response = await fetch('https://api.turtl.cc/umami/');
+        const data = await response.json();
+        const numericValue = parseInt(data.visitorsAllTime, 10);
+
+        if (!Number.isNaN(numericValue)) {
+            // Redirects the in-flight animation to the real value
+            counter.setTarget(numericValue);
+        }
+    } catch (error) {
+        console.error('Failed to fetch visitor count, keeping fallback value', error);
+    }
 }
 
 // Run when page loads
