@@ -1,9 +1,8 @@
 async function updateUserCount() {
-    // Fetch JSON from Cloudflare Worker endpoint
-    const response = await fetch('https://api.turtl.cc/analytics/');
+    const response = await fetch('https://api.turtl.cc/umami/');
     const data = await response.json();
 
-    const rawValue = data.totalUsers;
+    const rawValue = data.visitorsAllTime;
     const numericValue = parseInt(rawValue, 10);
     const container = document.getElementById('visitor-number');
     const animationDuration = Math.min(8000, Math.max(1000, 2000 + Math.log10(numericValue) * 1500)); // Logarithmic number scaling

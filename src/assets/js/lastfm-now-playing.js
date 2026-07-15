@@ -1,5 +1,5 @@
 const username = "megaturtl"
-const WORKER_URL = "https://api.turtl.cc/music/"
+const API_URL = "https://api.turtl.cc/lastfm/"
 
 // Cache DOM elements we will use
 const elements = {
@@ -41,36 +41,24 @@ if (elements.albumCover) {
 
 async function fetchWithCache(endpoint, params = {}) {
     const query = new URLSearchParams({ ...params, _: Date.now() }).toString();
-    const response = await fetch(`${WORKER_URL}${endpoint}?${query}`, { cache: 'no-store' });
+    const response = await fetch(`${API_URL}${endpoint}?${query}`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return response.json();
 }
 
-async function updateTooltips(artistName, trackName) {
-    try {
-        const [artist, track] = await Promise.all([
-            fetchWithCache('artist-info', { artist: artistName }),
-            fetchWithCache('track-info', { artist: artistName, track: trackName })
-        ]);
-
-        const updateTooltip = (element, count, type) => {
-            if (!element) return;
-            element.parentElement.style.display = 'block';
-            element.textContent = count === 0 ? `This is my first time listening to this ${type}!` :
-                                 count === 1 ? `I've listened to this ${type} once!` :
-                                 `I've listened to this ${type} ${count} times!`;
-        };
-
-        updateTooltip(elements.artistTooltip, artist.artist?.stats?.userPlayCount || 0, 'artist');
-        updateTooltip(elements.trackTooltip, track.track?.stats?.userPlayCount || 0, 'track');
-    } catch (error) {
-        console.error('Error updating tooltips:', error);
-    }
+function updateTrackTooltip(plays) {
+    const element = elements.trackTooltip;
+    if (!element) return;
+    element.parentElement.style.display = 'block';
+    element.textContent = plays === 0 ? "This is my first time listening to this track!" :
+        plays === 1 ? "I've listened to this track once!" :
+            `I've listened to this track ${plays} times!`;
 }
 
 async function updateNowPlaying() {
     try {
-        const data = await fetchWithCache('now-playing');
+        const response = await fetchWithCache('now-playing');
+        const data = response.now_playing;
         if (!data) return;
 
         requestAnimationFrame(() => {
@@ -87,19 +75,19 @@ async function updateNowPlaying() {
 
             if (elements.albumCover && links.album) {
                 links.album.href = data.album?.url || '';
-                const newImageUrl = data.track.imageMedium;
+                const newImageUrl = data.track.cover_url;
                 if (elements.albumCover.src !== newImageUrl) {
                     elements.albumCover.src = newImageUrl;
                 }
             }
 
             if (elements.date && links.user) {
-                links.user.textContent = data.isNowPlaying ? "(now)" : `(${data.playedAt})`;
+                links.user.textContent = data.is_playing ? "(now)" : `(${data.time_since})`;
             }
 
             // Update turtle animation if available
             if (window.turtlControls) {
-                const state = data.isNowPlaying ? 'BOP' : 'IDLE';
+                const state = data.is_playing ? 'BOP' : 'IDLE';
                 if (window.turtlControls.getCurrentState() !== state) {
                     window.turtlControls.setTurtlState(state);
                 }
@@ -112,7 +100,7 @@ async function updateNowPlaying() {
                 elements.nowPlaying.classList.add('fade-in');
             }
 
-            updateTooltips(data.artist.name, data.track.name);
+            updateTrackTooltip(data.track.plays ?? 0);
         });
     } catch (error) {
         console.error('Error updating now playing:', error);
