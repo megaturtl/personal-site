@@ -1,5 +1,5 @@
 const username = "megaturtl"
-const API_URL = "https://api.turtl.cc/lastfm/"
+const API_URL = "https://api.turtl.cc/lastfm"
 
 // Cache DOM elements we will use
 const elements = {
@@ -39,9 +39,9 @@ if (elements.albumCover) {
     }
 });
 
-async function fetchWithCache(endpoint, params = {}) {
+async function fetchWithCache(params = {}) {
     const query = new URLSearchParams({ ...params, _: Date.now() }).toString();
-    const response = await fetch(`${API_URL}${endpoint}?${query}`, { cache: 'no-store' });
+    const response = await fetch(`${API_URL}?${query}`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return response.json();
 }
@@ -57,7 +57,7 @@ function updateTrackTooltip(plays) {
 
 async function updateNowPlaying() {
     try {
-        const response = await fetchWithCache('now-playing');
+        const response = await fetchWithCache();
         const data = response.now_playing;
         if (!data) return;
 
